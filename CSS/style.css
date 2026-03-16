@@ -520,6 +520,43 @@ body {
     flex-direction: column;
     gap: 20px;
   }
+
+  /* logo is absolutely positioned by default — reset it so it flows in the column layout */
+  .logo {
+    position: static;
+    transform: none;
+    font-size: 28px;
+  }
+
+  .hero-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .promo-section {
+    padding: 40px 30px;
+  }
+
+  .promo-content {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  /* keep reverse sections stacking top-to-bottom, not bottom-to-top */
+  .promo-content.reverse {
+    flex-direction: column;
+  }
+
+  .promo-text {
+    max-width: 100%;
+  }
+
+  .promo-text h2 {
+    font-size: 24px;
+  }
+
+  .about-section h2 {
+    font-size: 30px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -533,12 +570,68 @@ body {
   }
 
   .logo {
-    font-size: 26px;
+    font-size: 22px;
     text-align: center;
   }
 
   .search-box {
     width: 100%;
     max-width: 280px;
+  }
+
+  .hero-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* popup overlaid on the hero — ensure it fits narrow screens */
+  .hero-popup {
+    width: 90%;
+    gap: 16px;
+  }
+
+  .hero-popup p {
+    font-size: 18px;
+  }
+
+  .promo-section {
+    padding: 30px 16px;
+  }
+
+  /* collapse 3-column bottom text to a single column */
+  .bottom-text-row {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .bottom-text-center-container,
+  .bottom-text-right-container {
+    justify-self: start;
+  }
+
+  .site-footer {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    margin-top: 30px;
+    padding: 0 20px;
+  }
+
+  /* remove fixed height so content doesn't overflow */
+  .footer-content {
+    flex-direction: column;
+    height: auto;
+    gap: 20px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .footer-links {
+    grid-auto-flow: row;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .footer-socials {
+    justify-self: center;
   }
 }
