@@ -24,6 +24,13 @@ body {
   position: relative;
 }
 
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .search-box {
   background-color: #EAF6F6;
   border-radius: 25px;
@@ -517,16 +524,36 @@ body {
   }
 
   .top-header {
-    flex-direction: column;
-    gap: 20px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 15px;
+}
 
-  /* logo is absolutely positioned by default — reset it so it flows in the column layout */
-  .logo {
-    position: static;
-    transform: none;
-    font-size: 28px;
-  }
+.logo {
+  position: static;
+  transform: none;
+  font-size: 28px;
+  text-align: center;
+  order: 1;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  order: 2;
+}
+
+.search-box {
+  flex: 1;
+  width: auto;
+}
+
+.header-icons {
+  flex-shrink: 0;
+}
 
   .hero-grid {
     grid-template-columns: repeat(2, 1fr);
