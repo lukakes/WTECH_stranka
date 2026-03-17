@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sticker Shop</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="/CSS/style.css" />
+</head>
+<body>
+    <header class="top-header">
+        <h1 class="logo">Super nazov</h1>
+        <div class="header-row">
+            <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search the store" />
+            </div>
+
+            <div class="header-icons">
+            <a href="#"><i class="fa-regular fa-user"></i></a>
+            <a href="#" class="cart-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-count">0</span>
+            </a>
+            </div>
+        </div>
+  </header>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="#">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
+    <a href="AboutUS.html">About</a>
+    <a href="Contact.html" class="active">Contact</a>
+  </nav>
+
+  <main class="product-page container">
+    <div class="breadcrumb">Home &gt; All</div>
+    <div class="product-header">
+        <h1 class="product-header-text">All Products</h1>
+    </div>
+    <div class="product-filters">
+        <div class="filter-group">
+            <label for="filter-availability">Availability</label>
+            <select id="filter-availability" name="availability">
+                <option value="all">All</option>
+                <option value="in-stock">In Stock</option>
+                <option value="out-of-stock">Out of Stock</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="filter-sort">Sort by</label>
+            <select id="filter-sort" name="sort">
+                <option value="featured">Featured</option>
+                <option value="name-asc">Name: A-Z</option>
+                <option value="name-desc">Name: Z-A</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="newest">Newest</option>
+            </select>
+        </div>
+
+        <p class="filter-count">Showing <span id="product-count">12</span> products</p>
+    </div>
+    <section class="product-page-contents">
+        <div class="product-page-contents-grid">
+            <a href="#" class="product-card">
+                <div class="product-image">
+                    <img src="/images/prod-img-1.png" alt="Bunny enamel pin">
+                </div>
+                <div class="product-info">
+                    <p>Bunny enamel pin</p>
+                    <p>€4,59</p>
+                </div>
+            </a>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+        </div>
+        <div class="pagination">
+            <button class="page-btn prev-btn" disabled>
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <span class="page-dots">...</span>
+            <button class="page-btn">8</button>
+
+            <button class="page-btn next-btn">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </section>
+  </main>
+  <footer>
+  <div class="footer-content">
+    <div class="footer-links">
+      <h2>Footer</h2>
+      <p>Link</p>
+      <p>Link</p>
+      <p>Link</p>
+    </div>
+
+    <div class="footer-socials">
+      <a href="#"><img src="/images/facebook.png" alt="Facebook"></a>
+      <a href="#"><img src="/images/instagram.png" alt="Instagram"></a>
+      <a href="#"><img src="/images/twitter.png" alt="Twitter"></a>
+    </div>
+  </div>
+</footer>
+</body>
