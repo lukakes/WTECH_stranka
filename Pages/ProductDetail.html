@@ -44,22 +44,20 @@
     <section class="product-detail-layout">
       <div class="product-detail-image-wrap">
         <div class="product-detail-image">
-          <img src="/images/prod-img-1.png" alt="Rabbit enamel pin">
+          <img src="/images/Products/prod-img-1.png" alt="Rabbit enamel pin">
         </div>
       </div>
 
       <div class="product-detail-info">
-        <h1 class="product-detail-title">Rabbit s ruzovou prdelkou</h1>
+        <h1 class="product-detail-title">Rabbit enamel pin</h1>
         <p class="product-detail-price">€6,70</p>
 
         <div class="product-detail-actions">
-          <select class="quantity-select">
-            <option value="1">Quantity 1</option>
-            <option value="2">Quantity 2</option>
-            <option value="3">Quantity 3</option>
-            <option value="4">Quantity 4</option>
-            <option value="5">Quantity 5</option>
-          </select>
+          <div class="quantity-picker">
+            <button type="button" class="quantity-btn minus">−</button>
+            <input type="number" class="quantity-value" value="1" min="1" max="99">
+            <button type="button" class="quantity-btn plus">+</button>
+          </div>
 
           <button class="detail-outline-btn">Add to wishlist</button>
           <button class="detail-cart-btn">Add to Cart</button>
@@ -179,5 +177,29 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    const minusBtn = document.querySelector(".quantity-btn.minus");
+    const plusBtn = document.querySelector(".quantity-btn.plus");
+    const input = document.querySelector(".quantity-value");
+
+    if (minusBtn && plusBtn && input) {
+      minusBtn.addEventListener("click", () => {
+        let value = parseInt(input.value) || 1;
+        if (value > 1) {
+          input.value = value - 1;
+        }
+      });
+
+      plusBtn.addEventListener("click", () => {
+        let value = parseInt(input.value) || 1;
+        let max = parseInt(input.max) || 99;
+
+        if (value < max) {
+          input.value = value + 1;
+        }
+      });
+    }
+  </script>
 </body>
 </html>

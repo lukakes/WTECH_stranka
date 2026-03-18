@@ -48,7 +48,6 @@
             <select id="filter-availability" name="availability">
                 <option value="all">All</option>
                 <option value="in-stock">In Stock</option>
-                <option value="out-of-stock">Out of Stock</option>
             </select>
         </div>
         <div class="filter-group">
@@ -67,7 +66,7 @@
     </div>
     <section class="product-page-contents">
         <div class="product-page-contents-grid">
-            <a href="/Pages/ProductDetail.html" class="product-card">
+            <a href="/Pages/ProductDetail.html" class="product-card" data-name="Bunny enamel pin" data-price="4.59" data-order="1" data-stock="in-stock">
                 <div class="product-image">
                     <img src="/images/Products/prod-img-1.png" alt="Bunny enamel pin">
                 </div>
@@ -77,7 +76,7 @@
                 </div>
             </a>
 
-            <a href="/Pages/ProductDetail.html" class="product-card">
+            <a href="/Pages/ProductDetail.html" class="product-card" data-name="Cute cat pin" data-price="3.40" data-order="2" data-stock="out-of-stock">
                 <div class="product-image">
                     <img src="/images/Products/prod-img-2.png" alt="Cute cat pin">
                 </div>
@@ -87,7 +86,7 @@
                 </div>
             </a>
 
-            <a href="/Pages/ProductDetail.html" class="product-card">
+            <a href="/Pages/ProductDetail.html" class="product-card" data-name="Fish patches" data-price="4.20" data-order="3" data-stock="in-stock">
                 <div class="product-image">
                     <img src="/images/Products/prod-img-3.png" alt="Cute cat pin">
                 </div>
@@ -97,12 +96,12 @@
                 </div>
             </a>
 
-            <a href="/Pages/ProductDetail.html" class="product-card">
+            <a href="/Pages/ProductDetail.html" class="product-card" data-name="Game Over Pin" data-price="3.90" data-order="4" data-stock="in-stock">
                 <div class="product-image">
                     <img src="/images/Products/prod-img-4.png" alt="Cute cat pin">
                 </div>
                 <div class="product-info">
-                    <p>Fish patches</p>
+                    <p>Game Over Pin</p>
                     <p>€3,90</p>
                 </div>
             </a>
@@ -203,4 +202,63 @@
     </div>
   </div>
 </footer>
+
+<script>
+  const sortSelect = document.getElementById("filter-sort");
+  const availabilitySelect = document.getElementById("filter-availability");
+  const grid = document.querySelector(".product-page-contents-grid");
+  const countEl = document.getElementById("product-count");
+
+  const allCards = Array.from(grid.querySelectorAll(".product-card"));
+  const realCards = allCards.filter(card => card.dataset.name && card.dataset.price);
+  const placeholders = allCards.filter(card => !card.dataset.name || !card.dataset.price);
+
+  function updateProducts() {
+    let filtered = [...realCards];
+
+    if (availabilitySelect.value === "in-stock") {
+      filtered = filtered.filter(card => card.dataset.stock === "in-stock");
+    } else if (availabilitySelect.value === "out-of-stock") {
+      filtered = filtered.filter(card => card.dataset.stock === "out-of-stock");
+    }
+
+    filtered.sort((a, b) => {
+      const nameA = a.dataset.name.toLowerCase();
+      const nameB = b.dataset.name.toLowerCase();
+      const priceA = parseFloat(a.dataset.price);
+      const priceB = parseFloat(b.dataset.price);
+      const orderA = parseInt(a.dataset.order) || 0;
+      const orderB = parseInt(b.dataset.order) || 0;
+
+      switch (sortSelect.value) {
+        case "name-asc":
+          return nameA.localeCompare(nameB);
+        case "name-desc":
+          return nameB.localeCompare(nameA);
+        case "price-asc":
+          return priceA - priceB;
+        case "price-desc":
+          return priceB - priceA;
+        case "newest":
+          return orderB - orderA;
+        case "featured":
+        default:
+          return orderA - orderB;
+      }
+    });
+
+    grid.innerHTML = "";
+
+    filtered.forEach(card => grid.appendChild(card));
+    placeholders.forEach(card => grid.appendChild(card));
+
+    countEl.textContent = filtered.length;
+  }
+
+  sortSelect.addEventListener("change", updateProducts);
+  availabilitySelect.addEventListener("change", updateProducts);
+
+  updateProducts();
+</script>
+
 </body>
