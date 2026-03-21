@@ -32,7 +32,38 @@
   </header>
   <nav class="navbar">
     <a href="index.html">Home</a>
-    <a href="Products.html">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
+    <div class="dropdown">
+        <a href="Products.html">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
+        <div class="dropdown-content">
+            <div class="row">
+                <div class="column">
+                    <h3>Category 1</h3>
+                    <a href="#">Link 1</a>
+                    <a href="#">Link 2</a>
+                    <a href="#">Link 3</a>
+                </div>
+                <div class="column">
+                    <h3>Category 2</h3>
+                    <a href="#">Link 1</a>
+                    <a href="#">Link 2</a>
+                    <a href="#">Link 3</a>
+                </div>
+                <div class="column">
+                    <h3>Category 3</h3>
+                    <a href="#">Link 1</a>
+                    <a href="#">Link 2</a>
+                    <a href="#">Link 3</a>
+                </div>
+                <div class="dropdown-image">
+                    <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Pytajte sa odpoviem, Fidlibum som vsetko viem">
+                    <p><a href="/Pages/Contact.html">Pytajte sa</a> všetko viem, Fidlibum som všetko viem!</p>
+                </div>
+            </div>
+            <div class="row">
+                <a href="/Pages/Products.html">See all products</a>
+            </div>
+        </div>
+    </div>
     <a href="AboutUS.html">About</a>
     <a href="Contact.html">Contact</a>
   </nav>
@@ -83,6 +114,41 @@
                             <div class="total-price-text">€6.70</div>
                         </div>
                     </div>
+                </li>
+                <li class="cart-item-container">
+                    <div class="cart-item shopping-flex">
+                        <div class="image">
+                            <a href="/Pages/ProductDetail.html">
+                                <div class="product-image">
+                                    <img src="/images/Products/prod-img-2.png" alt="Product image">
+                                </div>
+                            </a>
+                        </div>
+                        <div class="description">
+                            <a href="/Pages/ProductDetail.html">Milka choco snack</a>
+                        </div>
+                        <div class="price">
+                            <div class="price-text">€10.04</div>
+                        </div>
+                        <div class="quantity">
+                            <div class="quantity-change">
+                                <a href="#" class="minus round-btn"><i class="fa-solid fa-minus"></i></a>
+                                <input type="number" placeholder="1" class="cart-prod-number">
+                                <a href="#" class="plus round-btn"><i class="fa-solid fa-plus"></i></a>
+                            </div>
+                            <div class="quantity-remove">
+                                <a href="#" class="remove-cart-item">
+                                    <i class="fa-solid fa-x"></i>
+                                    <span>Remove</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="total-price">
+                            <div class="total-price-text">€6.70</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="cart-items">
                     <div class="cart-subtotal">
                         <div class="subtotal-info">
                             Taxes and <a href="#" class="cart-shipping-info">shipping</a> calculated at checkout
@@ -93,6 +159,7 @@
                         </div>
                     </div>
                 </li>
+                
             </ul>
             <div class="cart-payment">
                 <a href="#" class="btn">Check out</a>
@@ -117,5 +184,20 @@
         </div>
       </div>
     </footer>
+    <script>
+        const dropdown = document.querySelector('.dropdown');
+        let closeTimer;
+
+        dropdown.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimer);
+        dropdown.classList.add('open');
+        });
+
+        dropdown.addEventListener('mouseleave', () => {
+        closeTimer = setTimeout(() => {
+            dropdown.classList.remove('open');
+        }, 300);
+        });
+    </script>
 </body>
 </html>
