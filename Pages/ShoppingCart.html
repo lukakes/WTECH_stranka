@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sticker Shop</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="/CSS/style.css" />
+</head>
+<body>
+    <header class="top-header">
+        <h1 class="logo">Super nazov</h1>
+        <div class="header-row">
+            <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search the store" />
+            </div>
+
+            <div class="header-icons">
+            <a href="/Pages/Login.html"><i class="fa-regular fa-user"></i></a>
+            <a href="#" class="cart-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-count">0</span>
+            </a>
+            </div>
+        </div>
+  </header>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="Products.html">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
+    <a href="AboutUS.html">About</a>
+    <a href="Contact.html">Contact</a>
+  </nav>
+
+  <main class="shopping-cart container">
+    <div class="breadcrumb"> Home &gt; Shopping Cart</div>
+    <div class="shopping-cart-header">
+        <h1>Shopping cart</h1>
+    </div>
+    <div class="shopping-cart-contents">
+        <form>
+            <ul class="cart-items">
+                <li class="cart-item shopping-flex">
+                    <span class="description">Product</span>
+                    <span class="price">Price</span>
+                    <span class="quantity">Quantity</span>
+                    <span class="total-price">Total</span>
+                </li>
+                <li class="cart-item-container">
+                    <div class="cart-item shopping-flex">
+                        <div class="image">
+                            <a href="/Pages/ProductDetail.html">
+                                <div class="product-image">
+                                    <img src="/images/Products/prod-img-1.png" alt="Product image">
+                                </div>
+                            </a>
+                        </div>
+                        <div class="description">
+                            <a href="/Pages/ProductDetail.html">Haha hihi popis</a>
+                        </div>
+                        <div class="price">
+                            <div class="price-text">€6.70</div>
+                        </div>
+                        <div class="quantity">
+                            <div class="quantity-change">
+                                <a href="#" class="minus round-btn"><i class="fa-solid fa-minus"></i></a>
+                                <input type="number" placeholder="1" class="cart-prod-number">
+                                <a href="#" class="plus round-btn"><i class="fa-solid fa-plus"></i></a>
+                            </div>
+                            <div class="quantity-remove">
+                                <a href="#" class="remove-cart-item">
+                                    <i class="fa-solid fa-x"></i>
+                                    <span>Remove</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="total-price">
+                            <div class="total-price-text">€6.70</div>
+                        </div>
+                    </div>
+                    <div class="cart-subtotal">
+                        <div class="subtotal-info">
+                            Taxes and <a href="#" class="cart-shipping-info">shipping</a> calculated at checkout
+                        </div>
+                        <div class="subtotal-value">
+                            <div class="subtotal-value-text">Subtotal:</div>
+                            <div class="subtotal-value-number">€6,70</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="cart-payment">
+                <a href="#" class="btn">Check out</a>
+                <a href="/Pages/Products.html" class="cart-link-back-to-shop">Continue shopping</a>
+            </div>
+        </form>
+    </div>
+
+  </main>
+  <footer>
+      <div class="footer-content">
+        <div class="footer-links">
+          <h2>Footer</h2>
+          <p>Link</p>
+          <p>Link</p>
+          <p>Link</p>
+        </div>
+        <div class="footer-socials">
+          <a href="https://www.facebook.com/ozynet/?locale=sk_SK"><img src="/images/facebook.png" alt="Facebook"></a>
+          <a href="https://www.instagram.com/ozynet/"> <img src="/images/instagram.png" alt="Instagram"> </a>
+          <a href="https://best.aliexpress.com/?dp=pc-sk-aliexpress-aliexpress-sd&aff_fcid=6f534f77de824a4dacb1a47b0264b1b1-1773170757005-03070-_onxqVGs&tt=CPS_NORMAL&aff_fsk=_onxqVGs&aff_platform=portals-tool&sk=_onxqVGs&aff_trace_key=6f534f77de824a4dacb1a47b0264b1b1-1773170757005-03070-_onxqVGs&terminal_id=babac2ae1f95419ba00f6a755dfb076c&browser_redirect=true"> <img src="/images/twitter.png" alt="Twitter"></a> 
+        </div>
+      </div>
+    </footer>
+</body>
+</html>
