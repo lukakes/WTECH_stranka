@@ -343,6 +343,7 @@ input[type="number"] {
 
 .hero:hover .hero-popup {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .hero:hover .hero-area {
@@ -826,7 +827,7 @@ input[type="number"] {
 }
 
 .btn:hover {
-  background-color: #255b5c;
+  background-color: #255b5ccb;
 }
 
 .bottom-space {
