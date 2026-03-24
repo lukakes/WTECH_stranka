@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="/CSS/style.css" />
+</head>
+<body class="login-body">
+  <header class="top-header">
+    <h1 class="logo">Super nazov</h1>
+    <div class="header-row">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search the store" />
+      </div>
+
+      <div class="header-icons">
+        <a href="#"><i class="fa-regular fa-user"></i></a>
+        <a href="/Pages/ShoppingCart.html" class="cart-icon">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <div class="dropdown">
+      <a href="Products.html">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
+      <div class="dropdown-content">
+        <div class="row">
+          <div class="column">
+            <h3>Category 1</h3>
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+          <div class="column">
+            <h3>Category 2</h3>
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+          <div class="column">
+            <h3>Category 3</h3>
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+          <div class="dropdown-image">
+            <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Fidlibum" />
+            <p><a href="/Pages/Contact.html">Pytajte sa</a> všetko viem, Fidlibum som všetko viem!</p>
+          </div>
+        </div>
+        <div class="row">
+          <a href="/Pages/Products.html">See all products</a>
+        </div>
+      </div>
+    </div>
+    <a href="AboutUS.html">About</a>
+    <a href="Contact.html">Contact</a>
+  </nav>
+
+  <main class="login-page container">
+    <div class="login-page-contents">
+      <div class="login-page-header">
+        <h1>Create Account</h1>
+      </div>
+
+      <div class="login-page-inputs">
+        <div>
+          <input type="text" placeholder="Full name" />
+        </div>
+
+        <div>
+          <input type="email" placeholder="Email" />
+        </div>
+
+        <div>
+          <input type="password" placeholder="Password" />
+        </div>
+
+        <div>
+          <input type="password" placeholder="Confirm password" />
+        </div>
+
+        <button class="btn">Create account</button>
+
+        <div class="login-links">
+          <a href="Login.html">Already have an account?</a>
+          <a href="/Pages/index.html">Return to store</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-links">
+        <h2>Footer</h2>
+        <p>Link</p>
+        <p>Link</p>
+        <p>Link</p>
+      </div>
+
+      <div class="footer-socials">
+        <a href="#"><img src="/images/facebook.png" alt="Facebook"></a>
+        <a href="#"><img src="/images/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="/images/twitter.png" alt="Twitter"></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const dropdown = document.querySelector('.dropdown');
+    let closeTimer;
+
+    dropdown.addEventListener('mouseenter', () => {
+      clearTimeout(closeTimer);
+      dropdown.classList.add('open');
+    });
+
+    dropdown.addEventListener('mouseleave', () => {
+      closeTimer = setTimeout(() => {
+        dropdown.classList.remove('open');
+      }, 300);
+    });
+  </script>
+</body>
+</html>
