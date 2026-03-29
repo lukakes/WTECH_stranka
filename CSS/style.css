@@ -862,6 +862,27 @@ body.login-body .login-page {
   color: var(--hover-pink);
 }
 
+.login-page-contents {
+  position: relative;
+  min-height: 500px;
+}
+
+.admin-link {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 12px;
+}
+
+.admin-link a {
+  color: #555;
+  text-decoration: underline;
+}
+
+.admin-link a:hover {
+  color: #000;
+}
+
 /* ~PRODUCT DETAIL PAGE~ */
 
 .product-detail-page {
