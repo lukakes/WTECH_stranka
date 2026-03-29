@@ -571,6 +571,20 @@ input[type="number"] {
 
 /* ~PRODUCT CARD / PRODUCT LISTING SHARED~ */
 
+.product-admin-bar {
+  display: flex;
+  justify-content: flex-end; 
+  width: 100%;               
+  margin-bottom: 20px;
+}
+
+.add-product-btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .product-card {
   display: flex;
   flex-direction: column;
