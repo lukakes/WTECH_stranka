@@ -139,6 +139,66 @@ input[type="number"] {
   text-decoration: none;
 }
 
+.profile-menu {
+  position: relative;
+}
+
+.profile-dropdown {
+  position: relative;
+}
+
+.profile-dropdown > summary {
+  list-style: none;
+  cursor: pointer;
+  color: #1d5f63;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.profile-dropdown > summary::-webkit-details-marker {
+  display: none;
+}
+
+.profile-dropdown > summary:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.profile-dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 140px;
+  padding: 8px;
+  background-color: #ffffff;
+  border: 1px solid #dce8e8;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(13, 63, 66, 0.14);
+  z-index: 20;
+}
+
+.profile-dropdown[open] .profile-dropdown-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-dropdown-content a {
+  display: block;
+  border-radius: 8px;
+  color: var(--dgreen);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 10px;
+}
+
+.profile-dropdown-content a:hover {
+  color: #1d5f63;
+  background-color: var(--bgtint);
+}
+
 .cart-icon {
   position: relative;
 }
@@ -1006,6 +1066,72 @@ body.login-body .login-page {
   color: #000;
 }
 
+/* ~PROFILE PAGE~ */
+
+.profile-page {
+  padding-bottom: 60px;
+}
+
+.profile-card {
+  max-width: 820px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border: 1px solid #dce8e8;
+  border-radius: 18px;
+  box-shadow: 0 14px 30px rgba(13, 63, 66, 0.1);
+  padding: 30px;
+}
+
+.profile-card-header h1 {
+  font-size: 32px;
+  color: var(--dgreen);
+  margin-bottom: 10px;
+}
+
+.profile-card-header p {
+  color: #6a8080;
+  margin-bottom: 26px;
+}
+
+.profile-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.profile-item {
+  background-color: var(--bgtint);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.profile-item span {
+  display: block;
+  font-size: 12px;
+  color: #7b9494;
+  margin-bottom: 6px;
+}
+
+.profile-item p {
+  font-weight: 700;
+  color: var(--textcolor);
+}
+
+.profile-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.profile-btn-secondary {
+  background-color: var(--bgtint);
+  color: var(--dgreen);
+}
+
+.profile-btn-secondary:hover {
+  background-color: #dbeeee;
+}
+
 /* ~PRODUCT DETAIL PAGE~ */
 
 .product-detail-page {
@@ -1680,6 +1806,22 @@ a.cart-shipping-info:hover {
     flex-direction: column;
     align-items: center;
     gap: 10px;
+  }
+
+  .profile-card {
+    padding: 22px;
+  }
+
+  .profile-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .profile-actions .btn {
+    text-align: center;
   }
 
   .product-review-summary {

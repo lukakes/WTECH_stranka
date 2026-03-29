@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register</title>
+  <title>Sticker Shop</title>
 
   <link
     rel="stylesheet"
@@ -12,7 +12,7 @@
 
   <link rel="stylesheet" href="../CSS/style.css" />
 </head>
-<body class="login-body">
+<body>
   <header class="top-header">
     <h1 class="logo">Super nazov</h1>
     <div class="header-row">
@@ -23,17 +23,17 @@
 
       <div class="header-icons">
         <div class="profile-menu">
-        <details class="profile-dropdown">
-          <summary aria-label="Open profile menu">
-            <i class="fa-regular fa-user"></i>
-          </summary>
-          <div class="profile-dropdown-content">
-            <a href="Login.html">Login</a>
-            <a href="Profile.html">Profile</a>
-            <a href="index.html">Logout</a>
-          </div>
-        </details>
-      </div>
+          <details class="profile-dropdown">
+            <summary aria-label="Open profile menu">
+              <i class="fa-regular fa-user"></i>
+            </summary>
+            <div class="profile-dropdown-content">
+              <a href="Login.html">Login</a>
+              <a href="Profile.html">Profile</a>
+              <a href="index.html">Logout</a>
+            </div>
+          </details>
+        </div>
         <a href="ShoppingCart.html" class="cart-icon">
           <i class="fa-solid fa-cart-shopping"></i>
           <span class="cart-count">0</span>
@@ -67,8 +67,8 @@
             <a href="#">Link 3</a>
           </div>
           <div class="dropdown-image">
-            <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Fidlibum" />
-            <p><a href="Contact.html">Pytajte sa</a> všetko viem, Fidlibum som všetko viem!</p>
+            <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Pytajte sa odpoviem, Fidlibum som vsetko viem">
+            <p><a href="Contact.html">Pytajte sa</a> vsetko viem, Fidlibum som vsetko viem!</p>
           </div>
         </div>
         <div class="row">
@@ -80,37 +80,39 @@
     <a href="Contact.html">Contact</a>
   </nav>
 
-  <main class="login-page container">
-    <div class="login-page-contents">
-      <div class="login-page-header">
-        <h1>Create Account</h1>
+  <main class="profile-page container">
+    <div class="breadcrumb"><a href="index.html">Home</a> &gt; Profile</div>
+
+    <section class="profile-card">
+      <div class="profile-card-header">
+        <h1>My Profile</h1>
+        <p>Manage your account information from one place.</p>
       </div>
 
-      <div class="login-page-inputs">
-        <div>
-          <input type="text" placeholder="Full name" />
+      <div class="profile-card-grid">
+        <div class="profile-item">
+          <span>Full Name</span>
+          <p>Guest User</p>
         </div>
-
-        <div>
-          <input type="email" placeholder="Email" />
+        <div class="profile-item">
+          <span>Email</span>
+          <p>guest@example.com</p>
         </div>
-
-        <div>
-          <input type="password" placeholder="Password" />
+        <div class="profile-item">
+          <span>Phone</span>
+          <p>+421 000 000 000</p>
         </div>
-
-        <div>
-          <input type="password" placeholder="Confirm password" />
-        </div>
-
-        <button class="btn">Create account</button>
-
-        <div class="login-links">
-          <a href="Login.html">Already have an account?</a>
-          <a href="index.html">Return to store</a>
+        <div class="profile-item">
+          <span>Shipping Address</span>
+          <p>Example Street 123, Bratislava</p>
         </div>
       </div>
-    </div>
+
+      <div class="profile-actions">
+        <a href="Login.html" class="btn">Edit Profile</a>
+        <a href="ShoppingCart.html" class="btn profile-btn-secondary">View Cart</a>
+      </div>
+    </section>
   </main>
 
   <footer>
