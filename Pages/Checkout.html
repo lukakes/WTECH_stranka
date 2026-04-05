@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="../CSS/style.css" />
+</head>
+<body>
+  <header class="top-header">
+    <h1 class="logo">Super nazov</h1>
+    <div class="header-row">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search the store" />
+      </div>
+
+      <div class="header-icons">
+        <div class="profile-menu">
+        <details class="profile-dropdown">
+          <summary aria-label="Open profile menu">
+            <i class="fa-regular fa-user"></i>
+          </summary>
+          <div class="profile-dropdown-content">
+            <a href="Login.html">Login</a>
+            <a href="Profile.html">Profile</a>
+            <a href="index.html">Logout</a>
+          </div>
+        </details>
+      </div>
+        <a href="ShoppingCart.html" class="cart-icon">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <div class="dropdown">
+      <a href="Products.html">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
+      <div class="dropdown-content">
+        <div class="row">
+          <div class="column">
+            <h3>Category 1</h3>
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+          <div class="column">
+            <h3>Category 2</h3>
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+          <div class="column">
+            <h3>Category 3</h3>
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+          <div class="dropdown-image">
+            <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Pytajte sa odpoviem, Fidlibum som vsetko viem">
+            <p><a href="Contact.html">Pytajte sa</a> všetko viem, Fidlibum som všetko viem!</p>
+          </div>
+        </div>
+        <div class="row">
+          <a href="Products.html">See all products</a>
+        </div>
+      </div>
+    </div>
+    <a href="AboutUS.html">About</a>
+    <a href="Contact.html">Contact</a>
+  </nav>
+
+  <main class="checkout-page container">
+    <div class="breadcrumb"> <a href="index.html">Home</a> &gt; <a href="ShoppingCart.html">Shopping Cart</a> &gt; Checkout</div>
+
+    <div class="shopping-cart-header">
+      <h1>Checkout</h1>
+    </div>
+
+    <div class="checkout-layout">
+      <section class="checkout-form-wrap">
+        <form class="checkout-form">
+          <h2>Billing details</h2>
+
+          <div class="checkout-grid two-cols">
+            <div>
+              <label for="first-name">First name</label>
+              <input type="text" id="first-name" placeholder="Richard" />
+            </div>
+
+            <div>
+              <label for="last-name">Last name</label>
+              <input type="text" id="last-name" placeholder="Klein" />
+            </div>
+          </div>
+
+          <div class="checkout-grid">
+            <div>
+              <label for="email">Email address</label>
+              <input type="email" id="email" placeholder="name@email.com" />
+            </div>
+          </div>
+
+          <div class="checkout-grid">
+            <div>
+              <label for="phone">Phone number</label>
+              <input type="text" id="phone" placeholder="+421 900 000 000" />
+            </div>
+          </div>
+
+          <div class="checkout-grid">
+            <div>
+              <label for="address">Street address</label>
+              <input type="text" id="address" placeholder="Main street 12" />
+            </div>
+          </div>
+
+          <div class="checkout-grid two-cols">
+            <div>
+              <label for="city">City</label>
+              <input type="text" id="city" placeholder="Trnava" />
+            </div>
+
+            <div>
+              <label for="postal">Postal code</label>
+              <input type="text" id="postal" placeholder="917 01" />
+            </div>
+          </div>
+
+          <div class="checkout-section">
+            <h2>Delivery method</h2>
+
+            <label class="checkout-option">
+              <input type="radio" name="delivery" checked />
+              <span>Courier delivery — €4.90</span>
+            </label>
+
+            <label class="checkout-option">
+              <input type="radio" name="delivery" />
+              <span>Pickup point — €2.90</span>
+            </label>
+
+            <label class="checkout-option">
+              <input type="radio" name="delivery" />
+              <span>Personal pickup — Free</span>
+            </label>
+          </div>
+
+          <div class="checkout-section">
+            <h2>Payment method</h2>
+
+            <label class="checkout-option">
+              <input type="radio" name="payment" checked />
+              <span>Card payment</span>
+            </label>
+
+            <label class="checkout-option">
+              <input type="radio" name="payment" />
+              <span>Cash on delivery</span>
+            </label>
+
+            <label class="checkout-option">
+              <input type="radio" name="payment" />
+              <span>Bank transfer</span>
+            </label>
+          </div>
+
+          <div class="checkout-grid">
+            <div>
+              <label for="note">Order note</label>
+              <textarea id="note" placeholder="Optional note for your order"></textarea>
+            </div>
+          </div>
+
+          <div class="checkout-actions">
+            <a href="ShoppingCart.html" class="cart-link-back-to-shop">Back to cart</a>
+            <button type="submit" class="btn">Place order</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="checkout-summary">
+        <h2>Order summary</h2>
+
+        <div class="checkout-summary-item">
+          <span>Haha hihi popis × 1</span>
+          <span>€6.70</span>
+        </div>
+
+        <div class="checkout-summary-item">
+          <span>Milka choco snack × 1</span>
+          <span>€10.04</span>
+        </div>
+
+        <div class="checkout-summary-item">
+          <span>Delivery</span>
+          <span>€4.90</span>
+        </div>
+
+        <div class="checkout-summary-total">
+          <span>Total</span>
+          <span>€21.64</span>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-links">
+        <h2>Footer</h2>
+        <p>Link</p>
+        <p>Link</p>
+        <p>Link</p>
+      </div>
+      <div class="footer-socials">
+        <a href="https://www.facebook.com/ozynet/?locale=sk_SK"><img src="../images/facebook.png" alt="Facebook"></a>
+        <a href="https://www.instagram.com/ozynet/"><img src="../images/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const dropdown = document.querySelector('.dropdown');
+    let closeTimer;
+
+    dropdown.addEventListener('mouseenter', () => {
+      clearTimeout(closeTimer);
+      dropdown.classList.add('open');
+    });
+
+    dropdown.addEventListener('mouseleave', () => {
+      closeTimer = setTimeout(() => {
+        dropdown.classList.remove('open');
+      }, 300);
+    });
+  </script>
+</body>
+</html>
