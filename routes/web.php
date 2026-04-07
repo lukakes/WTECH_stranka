@@ -36,3 +36,7 @@ Route::get('/home', function () {
 
     return view('/pages/home', compact('featuredProducts'));
 })->name('home');
+
+Route::get('/register', function () {
+    return view('pages.register');
+})->name('register');
