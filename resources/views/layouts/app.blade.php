@@ -41,7 +41,38 @@
   {{-- Nav --}}
   <nav class="navbar">
     <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
-    <a href="#">Shop</a>
+    <div class="dropdown">
+      <a href="#">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
+      <div class="dropdown-content">
+        <div class="row">
+          <div class="column">
+            <h3>Category 1</h3>
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+          <div class="column">
+            <h3>Category 2</h3>
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+          <div class="column">
+            <h3>Category 3</h3>
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+          <div class="dropdown-image">
+            <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Fidlibum" />
+            <p><a href="#">Pytajte sa</a> všetko viem, Fidlibum som všetko viem!</p>
+          </div>
+        </div>
+        <div class="row">
+          <a href="#">See all products</a>
+        </div>
+      </div>
+    </div>
     <a href="#">About</a>
     <a href="#">Contact</a>
   </nav>
@@ -67,6 +98,22 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    const dropdown = document.querySelector('.dropdown');
+    let closeTimer;
+
+    dropdown.addEventListener('mouseenter', () => {
+      clearTimeout(closeTimer);
+      dropdown.classList.add('open');
+    });
+
+    dropdown.addEventListener('mouseleave', () => {
+      closeTimer = setTimeout(() => {
+        dropdown.classList.remove('open');
+      }, 300);
+    });
+  </script>
 
 </body>
 </html>
