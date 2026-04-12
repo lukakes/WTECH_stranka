@@ -25,45 +25,16 @@
   <section class="featured-section" id="featured-products">
     <h2>Featured</h2>
     <div class="featured-grid container">
-      <a href="{{ route('home') }}#featured-products" class="product-card">
-        <div class="product-image">
-          <img src="{{ asset('images/Products/prod-img-1.png') }}" alt="Jotaro sticker">
-        </div>
-        <div class="product-info">
-          <p>Jotaro sticker</p>
-          <p>3.90 EUR</p>
-        </div>
-      </a>
-
-      <a href="{{ route('home') }}#featured-products" class="product-card">
-        <div class="product-image">
-          <img src="{{ asset('images/Products/prod-img-2.png') }}" alt="Pikachu pin">
-        </div>
-        <div class="product-info">
-          <p>Pikachu pin</p>
-          <p>4.90 EUR</p>
-        </div>
-      </a>
-
-      <a href="{{ route('home') }}#featured-products" class="product-card">
-        <div class="product-image">
-          <img src="{{ asset('images/Products/prod-img-3.png') }}" alt="Cat plush">
-        </div>
-        <div class="product-info">
-          <p>Cat plush</p>
-          <p>14.90 EUR</p>
-        </div>
-      </a>
-
-      <a href="{{ route('home') }}#featured-products" class="product-card">
-        <div class="product-image">
-          <img src="{{ asset('images/Products/prod-img-4.png') }}" alt="Game over pin">
-        </div>
-        <div class="product-info">
-          <p>Game over pin</p>
-          <p>3.90 EUR</p>
-        </div>
-      </a>
+      @forelse($featuredProducts as $product)
+        <x-product-card
+          :href="route('home') . '#featured-products'"
+          :image="$product->image_url ?: 'images/Products/prod-img-1.png'"
+          :name="$product->nazov ?: 'Product'"
+          :price="$product->cena ?: 0"
+        />
+      @empty
+        <p>No featured products found.</p>
+      @endforelse
     </div>
   </section>
   <section class="promo-section">
