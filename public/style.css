@@ -316,6 +316,10 @@ input[type="number"] {
   height: 3px;
 }
 
+.navbar .dropdown > a.active::after {
+  height: 3px;
+}
+
 .navbar .dropdown-content a::after {
   display: none;
 }
@@ -714,6 +718,20 @@ input[type="number"] {
 
 .product-card:hover .product-info {
   background-color: #e8609a;
+}
+
+.product-card.empty-card {
+  cursor: default;
+  pointer-events: none;
+}
+
+.product-card.empty-card .product-image {
+  background-color: #d3e1e2;
+}
+
+.product-card.empty-card .product-info {
+  background-color: #c5d6d7;
+  color: #6d8485;
 }
 
 /* ~PRODUCTS PAGE~ */

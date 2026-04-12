@@ -56,26 +56,26 @@
   <nav class="navbar">
     <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
     <div class="dropdown">
-      <a href="{{ route('home') }}#featured-products">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
+      <a href="{{ route('products') }}" class="{{ request()->routeIs('products') ? 'active' : '' }}">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
       <div class="dropdown-content">
         <div class="row">
           <div class="column">
             <h3>Category 1</h3>
-            <a href="{{ route('home') }}#featured-products">Link 1</a>
-            <a href="{{ route('home') }}#featured-products">Link 2</a>
-            <a href="{{ route('home') }}#featured-products">Link 3</a>
+            <a href="{{ route('products') }}">Link 1</a>
+            <a href="{{ route('products') }}">Link 2</a>
+            <a href="{{ route('products') }}">Link 3</a>
           </div>
           <div class="column">
             <h3>Category 2</h3>
-            <a href="{{ route('home') }}#featured-products">Link 1</a>
-            <a href="{{ route('home') }}#featured-products">Link 2</a>
-            <a href="{{ route('home') }}#featured-products">Link 3</a>
+            <a href="{{ route('products') }}">Link 1</a>
+            <a href="{{ route('products') }}">Link 2</a>
+            <a href="{{ route('products') }}">Link 3</a>
           </div>
           <div class="column">
             <h3>Category 3</h3>
-            <a href="{{ route('home') }}#featured-products">Link 1</a>
-            <a href="{{ route('home') }}#featured-products">Link 2</a>
-            <a href="{{ route('home') }}#featured-products">Link 3</a>
+            <a href="{{ route('products') }}">Link 1</a>
+            <a href="{{ route('products') }}">Link 2</a>
+            <a href="{{ route('products') }}">Link 3</a>
           </div>
           <div class="dropdown-image">
             <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Pytajte sa odpoviem, Fidlibum som vsetko viem">
@@ -83,7 +83,7 @@
           </div>
         </div>
         <div class="row">
-          <a href="{{ route('home') }}#featured-products">See all products</a>
+          <a href="{{ route('products') }}">See all products</a>
         </div>
       </div>
     </div>

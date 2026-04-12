@@ -15,35 +15,40 @@ class ProductCatalogSeeder extends Seeder
         $stickerCategoryId = $this->firstOrCreateCategory('Stickers');
         $pinCategoryId = $this->firstOrCreateCategory('Pins');
         $plushCategoryId = $this->firstOrCreateCategory('Plushies');
+        $patchesCategoryId = $this->firstOrCreateCategory('Patches');
 
         $products = [
             [
-                'nazov' => 'Jotaro sticker',
-                'popis' => 'Durable anime-themed sticker.',
+                'nazov' => 'Bunny pin',
+                'popis' => 'Durable enamel bunny pin.',
+                'zakladna_cena' => 4.50,
+                'kategoriaId' => $pinCategoryId,
+                'image' => 'images/Products/prod-img-1.png',
+                'skladom' => 100,
+            ],
+            [
+                'nazov' => 'Cute cat stickers',
+                'popis' => 'Collectible cute cat stickers.',
                 'zakladna_cena' => 3.90,
                 'kategoriaId' => $stickerCategoryId,
-                'image' => 'images/Products/prod-img-1.png',
-            ],
-            [
-                'nazov' => 'Pikachu pin',
-                'popis' => 'Collectible enamel pin.',
-                'zakladna_cena' => 4.90,
-                'kategoriaId' => $pinCategoryId,
                 'image' => 'images/Products/prod-img-2.png',
+                'skladom' => 100,
             ],
             [
-                'nazov' => 'Cat plush',
-                'popis' => 'Soft plush companion.',
-                'zakladna_cena' => 14.90,
-                'kategoriaId' => $plushCategoryId,
+                'nazov' => 'Fish patches',
+                'popis' => 'Dead fish sewable patches.',
+                'zakladna_cena' => 7.00,
+                'kategoriaId' => $patchesCategoryId,
                 'image' => 'images/Products/prod-img-3.png',
+                'skladom' => 0,
             ],
             [
                 'nazov' => 'Game over pin',
                 'popis' => 'Retro gaming enamel pin.',
-                'zakladna_cena' => 3.90,
+                'zakladna_cena' => 4.50,
                 'kategoriaId' => $pinCategoryId,
                 'image' => 'images/Products/prod-img-4.png',
+                'skladom' => 0,
             ],
         ];
 
@@ -81,7 +86,7 @@ class ProductCatalogSeeder extends Seeder
                 ],
                 [
                     'cena' => $productData['zakladna_cena'],
-                    'skladom' => 100,
+                    'skladom' => $productData['skladom'] ?? 100,
                     'aktivny' => true,
                 ]
             );
