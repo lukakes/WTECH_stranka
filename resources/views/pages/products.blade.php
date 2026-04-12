@@ -50,7 +50,7 @@
           @endphp
 
           <a
-            href="{{ route('products') }}#product-{{ $product->id }}"
+            href="{{ route('products.show', ['productId' => $product->id]) }}"
             id="product-{{ $product->id }}"
             class="product-card"
             data-name="{{ $product->nazov }}"
