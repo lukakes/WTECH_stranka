@@ -1,40 +1,51 @@
-@extends('layouts.app')
+@extends('layouts.store')
 
 @section('title', 'Register')
+@section('bodyClass', 'login-body')
 
 @section('content')
-<div class="login-page container">
+<main class="login-page container">
     <div class="login-page-contents">
         <div class="login-page-header">
             <h1>Create Account</h1>
         </div>
 
-        <div class="login-page-inputs">
+        <form method="POST" action="{{ route('register') }}" class="login-page-inputs">
+            @csrf
 
             <div>
-                <input type="text" placeholder="Full name">
+                <input id="name" type="text" name="name" value="{{ old('name') }}" placeholder="Full name" required autofocus autocomplete="name">
+                @error('name')
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
-                <input type="email" placeholder="Email">
+                <input id="email" type="email" name="email" value="{{ old('email') }}" placeholder="Email" required autocomplete="username">
+                @error('email')
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
-                <input type="password" placeholder="Password">
+                <input id="password" type="password" name="password" placeholder="Password" required autocomplete="new-password">
+                @error('password')
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
-                <input type="password" placeholder="Confirm password">
+                <input id="password_confirmation" type="password" name="password_confirmation" placeholder="Confirm password" required autocomplete="new-password">
             </div>
 
-            <button class="btn">Create account</button>
+            <button type="submit" class="btn">Create account</button>
 
             <div class="login-links">
-                <a href="#">Already have an account?</a>
+                <a href="{{ route('login') }}">Already have an account?</a>
                 <a href="{{ route('home') }}">Return to store</a>
             </div>
 
-        </div>
+        </form>
     </div>
-</div>
+</main>
 @endsection

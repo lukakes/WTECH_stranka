@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.store')
 
 @section('title', 'Home - Sticker Shop')
 
@@ -25,10 +25,45 @@
   <section class="featured-section" id="featured-products">
     <h2>Featured</h2>
     <div class="featured-grid container">
-      {{-- Later this will loop over real products --}}
-      @foreach(($featuredProducts ?? []) as $product)
-        <x-product-card :product="$product" />
-      @endforeach
+      <a href="{{ route('home') }}#featured-products" class="product-card">
+        <div class="product-image">
+          <img src="{{ asset('images/Products/prod-img-1.png') }}" alt="Jotaro sticker">
+        </div>
+        <div class="product-info">
+          <p>Jotaro sticker</p>
+          <p>3.90 EUR</p>
+        </div>
+      </a>
+
+      <a href="{{ route('home') }}#featured-products" class="product-card">
+        <div class="product-image">
+          <img src="{{ asset('images/Products/prod-img-2.png') }}" alt="Pikachu pin">
+        </div>
+        <div class="product-info">
+          <p>Pikachu pin</p>
+          <p>4.90 EUR</p>
+        </div>
+      </a>
+
+      <a href="{{ route('home') }}#featured-products" class="product-card">
+        <div class="product-image">
+          <img src="{{ asset('images/Products/prod-img-3.png') }}" alt="Cat plush">
+        </div>
+        <div class="product-info">
+          <p>Cat plush</p>
+          <p>14.90 EUR</p>
+        </div>
+      </a>
+
+      <a href="{{ route('home') }}#featured-products" class="product-card">
+        <div class="product-image">
+          <img src="{{ asset('images/Products/prod-img-4.png') }}" alt="Game over pin">
+        </div>
+        <div class="product-info">
+          <p>Game over pin</p>
+          <p>3.90 EUR</p>
+        </div>
+      </a>
     </div>
   </section>
   <section class="promo-section">
@@ -39,11 +74,11 @@
             Samozrejme ze viem aky placeholder text tu mam napisat,
             aby to tematicky sedelo ku zvysku stranky
           </p>
-          <a href="#" class="btn">See more !</a>
+          <a href="{{ route('home') }}#about-shop" class="btn">See more !</a>
         </div>
 
         <div class="promo-image">
-          <img src="{{ asset('/images/Homepage/Squidward plush.png') }}" alt="Featured plush image">
+          <img src="{{ asset('images/Homepage/Squidward plush.png') }}" alt="Featured plush image">
         </div>
       </div>
     </section>
@@ -60,15 +95,15 @@
             Potom prišli ďakí veľkí chlapi<br>
             Spýtali sa, či ma niečo trápi
           </p>
-          <a href="#" class="btn">See more !</a>
+          <a href="{{ route('home') }}#contact-shop" class="btn">See more !</a>
         </div>
         
         <div class="promo-image">
-          <img src="{{ asset('/images/Homepage/Demon Slayer pins.png') }}" alt="demonslayer pins">
+          <img src="{{ asset('images/Homepage/Demon Slayer pins.png') }}" alt="demonslayer pins">
         </div>
       </div>
     </section>
-    <section class="bottom-space">
+    <section class="bottom-space" id="about-shop">
         <div class="bottom-text-row ">
           <div class="bottom-text-left-container">
             <h2>Here text</h2>

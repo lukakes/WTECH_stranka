@@ -199,6 +199,29 @@ input[type="number"] {
   background-color: var(--bgtint);
 }
 
+.profile-dropdown-content form {
+  margin: 0;
+}
+
+.profile-dropdown-content button {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+  color: var(--dgreen);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 10px;
+  text-align: left;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.profile-dropdown-content button:hover {
+  color: #1d5f63;
+  background-color: var(--bgtint);
+}
+
 .cart-icon {
   position: relative;
 }
@@ -1048,6 +1071,31 @@ body.login-body .login-page {
 .login-page-contents {
   position: relative;
   min-height: 500px;
+}
+
+.form-error {
+  margin-top: 6px;
+  color: #cc1c54;
+  font-size: 13px;
+}
+
+.form-success {
+  width: 50%;
+  max-width: 900px;
+  margin: 12px auto 0;
+  background-color: #e8f8f4;
+  border: 1px solid #8cd0c5;
+  color: #1a6a6c;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.remember-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #355f61;
+  font-size: 14px;
 }
 
 .admin-link {
