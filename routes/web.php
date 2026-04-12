@@ -38,7 +38,8 @@ Route::get('/', function () {
 
 Route::get('/products', function () {
     $products = DB::table('Produkt as p')
-        ->select('p.id', 'p.nazov')
+        ->leftJoin('Kategoria as k', 'k.id', '=', 'p.kategoriaId')
+        ->select('p.id', 'p.nazov', 'k.nazov as kategoria_nazov')
         ->selectSub(function ($query) {
             $query->from('VariantProduktu as v')
                 ->select('v.cena')
@@ -69,7 +70,6 @@ Route::get('/products', function () {
             $productQuery->whereNull('p.aktivny')->orWhere('p.aktivny', true);
         })
         ->orderBy('p.id')
-        ->limit(4)
         ->get()
         ->map(function ($product, $index) {
             $product->image_url = ltrim((string) $product->image_url, '/');

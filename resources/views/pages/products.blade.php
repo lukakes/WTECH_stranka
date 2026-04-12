@@ -4,9 +4,7 @@
 
 @section('content')
   @php
-    $totalGridSlots = 12;
     $realProductsCount = $products->count();
-    $emptySlots = max(0, $totalGridSlots - $realProductsCount);
   @endphp
 
   <main class="product-page container">
@@ -17,6 +15,17 @@
     </div>
 
     <div class="product-filters">
+      <div class="filter-group">
+        <label for="filter-category">Category</label>
+        <select id="filter-category" name="category">
+          <option value="all">All</option>
+          <option value="stickers">Stickers</option>
+          <option value="pins">Pins</option>
+          <option value="patches">Patches</option>
+          <option value="plushies">Plushies</option>
+        </select>
+      </div>
+
       <div class="filter-group">
         <label for="filter-availability">Availability</label>
         <select id="filter-availability" name="availability">
@@ -57,6 +66,7 @@
             data-price="{{ number_format((float) $product->cena, 2, '.', '') }}"
             data-order="{{ $product->sort_order }}"
             data-stock="{{ $product->stock_status }}"
+            data-category="{{ \Illuminate\Support\Str::lower($product->kategoria_nazov ?: 'uncategorized') }}"
           >
             <div class="product-image">
               <img src="{{ asset($imagePath) }}" alt="{{ $product->nazov }}">
@@ -70,48 +80,91 @@
           <p>No products found.</p>
         @endforelse
 
-        @for ($i = 0; $i < $emptySlots; $i++)
-          <div class="product-card empty-card" aria-hidden="true">
-            <div class="product-image"></div>
-            <div class="product-info">
-              <p>Description</p>
-              <p>Price</p>
-            </div>
-          </div>
-        @endfor
       </div>
 
-      <div class="pagination" aria-hidden="true">
-        <button class="page-btn prev-btn" disabled>
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
-        <button class="page-btn">3</button>
-        <span class="page-dots">...</span>
-        <button class="page-btn">8</button>
-
-        <button class="page-btn next-btn">
-          <i class="fa-solid fa-chevron-right"></i>
-        </button>
+      <div class="pagination" id="products-pagination">
       </div>
     </section>
   </main>
 
   <script>
+    const productsPerPage = 12;
     const sortSelect = document.getElementById('filter-sort');
+    const categorySelect = document.getElementById('filter-category');
     const availabilitySelect = document.getElementById('filter-availability');
     const grid = document.querySelector('.product-page-contents-grid');
+    const pagination = document.getElementById('products-pagination');
     const countEl = document.getElementById('product-count');
+    let currentPage = 1;
 
-    if (sortSelect && availabilitySelect && grid && countEl) {
+    if (sortSelect && categorySelect && availabilitySelect && grid && countEl && pagination) {
       const allCards = Array.from(grid.querySelectorAll('.product-card'));
       const realCards = allCards.filter((card) => card.dataset.name && card.dataset.price);
-      const placeholders = allCards.filter((card) => !card.dataset.name || !card.dataset.price);
+
+      function createPlaceholderCard() {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'product-card empty-card';
+        placeholder.setAttribute('aria-hidden', 'true');
+        placeholder.innerHTML = `
+          <div class="product-image"></div>
+          <div class="product-info">
+            <p>Description</p>
+            <p>Price</p>
+          </div>
+        `;
+
+        return placeholder;
+      }
+
+      function renderPagination(totalPages) {
+        pagination.innerHTML = '';
+
+        if (totalPages <= 1) {
+          return;
+        }
+
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'page-btn prev-btn';
+        prevBtn.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener('click', () => {
+          if (currentPage > 1) {
+            currentPage -= 1;
+            updateProducts();
+          }
+        });
+        pagination.appendChild(prevBtn);
+
+        for (let page = 1; page <= totalPages; page += 1) {
+          const btn = document.createElement('button');
+          btn.className = `page-btn${page === currentPage ? ' active' : ''}`;
+          btn.textContent = String(page);
+          btn.addEventListener('click', () => {
+            currentPage = page;
+            updateProducts();
+          });
+          pagination.appendChild(btn);
+        }
+
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'page-btn next-btn';
+        nextBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener('click', () => {
+          if (currentPage < totalPages) {
+            currentPage += 1;
+            updateProducts();
+          }
+        });
+        pagination.appendChild(nextBtn);
+      }
 
       function updateProducts() {
         let filtered = [...realCards];
+
+        if (categorySelect.value !== 'all') {
+          filtered = filtered.filter((card) => card.dataset.category === categorySelect.value);
+        }
 
         if (availabilitySelect.value === 'in-stock') {
           filtered = filtered.filter((card) => card.dataset.stock === 'in-stock');
@@ -144,15 +197,37 @@
           }
         });
 
+        const totalPages = Math.max(1, Math.ceil(filtered.length / productsPerPage));
+        currentPage = Math.min(currentPage, totalPages);
+
+        const start = (currentPage - 1) * productsPerPage;
+        const currentCards = filtered.slice(start, start + productsPerPage);
+
         grid.innerHTML = '';
-        filtered.forEach((card) => grid.appendChild(card));
-        placeholders.forEach((card) => grid.appendChild(card));
+
+        currentCards.forEach((card) => grid.appendChild(card));
+
+        const missingSlots = Math.max(0, productsPerPage - currentCards.length);
+        for (let i = 0; i < missingSlots; i += 1) {
+          grid.appendChild(createPlaceholderCard());
+        }
 
         countEl.textContent = String(filtered.length);
+        renderPagination(totalPages);
       }
 
-      sortSelect.addEventListener('change', updateProducts);
-      availabilitySelect.addEventListener('change', updateProducts);
+      sortSelect.addEventListener('change', () => {
+        currentPage = 1;
+        updateProducts();
+      });
+      categorySelect.addEventListener('change', () => {
+        currentPage = 1;
+        updateProducts();
+      });
+      availabilitySelect.addEventListener('change', () => {
+        currentPage = 1;
+        updateProducts();
+      });
 
       updateProducts();
     }
