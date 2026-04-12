@@ -45,9 +45,13 @@
           </details>
         </div>
 
-        <a href="{{ route('home') }}#featured-products" class="cart-icon" aria-label="Shopping cart">
+        @php
+          $cartCount = array_sum(session('cart', []));
+        @endphp
+
+        <a href="{{ route('cart.index') }}" class="cart-icon" aria-label="Shopping cart">
           <i class="fa-solid fa-cart-shopping"></i>
-          <span class="cart-count">0</span>
+          <span class="cart-count">{{ $cartCount }}</span>
         </a>
       </div>
     </div>

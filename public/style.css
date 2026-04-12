@@ -1527,7 +1527,34 @@ body.login-body .login-page {
   font-size: 100%;
 }
 
+.quantity-change {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.round-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #d8e6e7;
+  border-radius: 50%;
+  background-color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.round-btn:hover {
+  background-color: var(--bgtint);
+}
+
 .quantity-remove .remove-cart-item {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
   gap: 10px;
   font-size: 0.75rem;
   line-height: 1.6em;

@@ -32,16 +32,23 @@
         <h1 class="product-detail-title">{{ $product->nazov }}</h1>
         <p class="product-detail-price">€{{ number_format((float) $product->cena, 2, ',', '') }}</p>
 
-        <div class="product-detail-actions">
+        @if (session('cart_error'))
+          <p class="form-error">{{ session('cart_error') }}</p>
+        @endif
+
+        <form class="product-detail-actions" method="POST" action="{{ route('cart.add') }}">
+          @csrf
+          <input type="hidden" name="product_id" value="{{ $product->id }}">
+
           <div class="quantity-picker">
             <button type="button" class="quantity-btn minus">-</button>
-            <input type="number" class="quantity-value" value="1" min="1" max="99">
+            <input type="number" name="quantity" class="quantity-value" value="1" min="1" max="99">
             <button type="button" class="quantity-btn plus">+</button>
           </div>
 
           <button class="detail-outline-btn" type="button">Add to wishlist</button>
-          <button class="detail-cart-btn" type="button">Add to Cart</button>
-        </div>
+          <button class="detail-cart-btn" type="submit">Add to Cart</button>
+        </form>
 
         <div class="product-detail-description">
           <p>{{ $descriptionText }}</p>
