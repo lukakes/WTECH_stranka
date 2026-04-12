@@ -18,7 +18,7 @@
     <div class="header-row">
       <div class="search-box">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search the store" />
+        <input type="text" id="store-product-search" placeholder="Search the store" autocomplete="off" value="{{ request('q', '') }}" />
       </div>
 
       <div class="header-icons">
@@ -118,6 +118,9 @@
 
   <script>
     const dropdown = document.querySelector('.dropdown');
+    const storeSearchInput = document.getElementById('store-product-search');
+    const isProductsPage = {{ request()->routeIs('products') ? 'true' : 'false' }};
+    const productsUrl = '{{ route('products') }}';
 
     if (dropdown) {
       let closeTimer;
@@ -132,6 +135,32 @@
           dropdown.classList.remove('open');
         }, 300);
       });
+    }
+
+    if (storeSearchInput && !isProductsPage) {
+      storeSearchInput.addEventListener('input', () => {
+        const q = storeSearchInput.value.trim();
+
+        if (q !== '') {
+          sessionStorage.setItem('focusStoreSearch', '1');
+          window.location.href = `${productsUrl}?q=${encodeURIComponent(q)}`;
+        }
+      });
+    }
+
+    if (storeSearchInput && isProductsPage) {
+      const shouldRefocus = sessionStorage.getItem('focusStoreSearch') === '1';
+      const hasQuery = new URLSearchParams(window.location.search).get('q');
+
+      if (shouldRefocus || hasQuery) {
+        sessionStorage.removeItem('focusStoreSearch');
+
+        requestAnimationFrame(() => {
+          storeSearchInput.focus();
+          const len = storeSearchInput.value.length;
+          storeSearchInput.setSelectionRange(len, len);
+        });
+      }
     }
   </script>
 </body>

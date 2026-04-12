@@ -95,6 +95,7 @@
     const grid = document.querySelector('.product-page-contents-grid');
     const pagination = document.getElementById('products-pagination');
     const countEl = document.getElementById('product-count');
+    const headerSearchInput = document.getElementById('store-product-search');
     let currentPage = 1;
 
     if (sortSelect && categorySelect && availabilitySelect && grid && countEl && pagination) {
@@ -162,6 +163,15 @@
       function updateProducts() {
         let filtered = [...realCards];
 
+        const searchTerm = (headerSearchInput?.value || '').trim().toLowerCase();
+
+        if (searchTerm !== '') {
+          filtered = filtered.filter((card) => {
+            const name = (card.dataset.name || '').toLowerCase();
+            return name.includes(searchTerm);
+          });
+        }
+
         if (categorySelect.value !== 'all') {
           filtered = filtered.filter((card) => card.dataset.category === categorySelect.value);
         }
@@ -228,6 +238,13 @@
         currentPage = 1;
         updateProducts();
       });
+
+      if (headerSearchInput) {
+        headerSearchInput.addEventListener('input', () => {
+          currentPage = 1;
+          updateProducts();
+        });
+      }
 
       updateProducts();
     }
