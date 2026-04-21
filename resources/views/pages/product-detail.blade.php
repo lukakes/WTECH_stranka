@@ -3,15 +3,6 @@
 @section('title', ($product->nazov ?? 'Product') . ' - Sticker Shop')
 
 @section('content')
-  @php
-    $imagePath = $product->image_url ?: 'images/Products/prod-img-1.png';
-    $imagePath = preg_replace('/^\.\.\//', '', (string) $imagePath);
-    $descriptionText = trim((string) ($product->popis ?? ''));
-    $descriptionText = $descriptionText !== ''
-      ? $descriptionText
-      : 'This product currently has no detailed description.';
-  @endphp
-
   <main class="product-detail-page container">
     <div class="breadcrumb">
       <a href="{{ route('home') }}">Home</a>
@@ -24,7 +15,7 @@
     <section class="product-detail-layout">
       <div class="product-detail-image-wrap">
         <div class="product-detail-image">
-          <img src="{{ asset($imagePath) }}" alt="{{ $product->nazov }}">
+          <img src="{{ asset($product->image_path) }}" alt="{{ $product->nazov }}">
         </div>
       </div>
 
@@ -51,7 +42,7 @@
         </form>
 
         <div class="product-detail-description">
-          <p>{{ $descriptionText }}</p>
+          <p>{{ $product->description_text }}</p>
         </div>
 
         <div class="product-detail-specs">

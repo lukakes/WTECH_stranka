@@ -2,142 +2,126 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Produkt;
+use App\Models\VariantProduktu;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class StorefrontController extends Controller
 {
     public function home()
     {
-        $featuredProducts = DB::table('Produkt as p')
-            ->select('p.id', 'p.nazov')
-            ->selectSub(function ($query) {
-                $query->from('VariantProduktu as v')
-                    ->select('v.cena')
-                    ->whereColumn('v.produktId', 'p.id')
-                    ->where(function ($variantQuery) {
-                        $variantQuery->whereNull('v.aktivny')->orWhere('v.aktivny', true);
-                    })
-                    ->orderBy('v.id')
-                    ->limit(1);
-            }, 'cena')
-            ->selectSub(function ($query) {
-                $query->from('ProduktovyObrazok as po')
-                    ->select('po.url')
-                    ->whereColumn('po.produktId', 'p.id')
-                    ->orderByRaw('COALESCE(po.poradie, 9999)')
-                    ->orderBy('po.id')
-                    ->limit(1);
-            }, 'image_url')
-            ->where(function ($productQuery) {
-                $productQuery->whereNull('p.aktivny')->orWhere('p.aktivny', true);
-            })
-            ->orderBy('p.id')
+        if (!Schema::hasTable('Produkt')) {
+            return view('pages.home', ['featuredProducts' => collect()]);
+        }
+
+        $featuredProducts = Produkt::query()
+            ->active()
+            ->with([
+                'variants' => function ($query) {
+                    $query->active()->orderBy('id');
+                },
+                'images' => function ($query) {
+                    $query->orderByRaw('COALESCE(poradie, 9999)')->orderBy('id');
+                },
+            ])
+            ->orderBy('id')
             ->limit(4)
-            ->get();
+            ->get()
+            ->map(function (Produkt $product) {
+                $variant = $product->variants->first();
+                $imageUrl = $this->sanitizeImagePath($product->images->first()?->url);
+
+                return (object) [
+                    'id' => (int) $product->id,
+                    'nazov' => $product->nazov,
+                    'cena' => (float) ($variant?->cena ?? $product->zakladna_cena ?? 0),
+                    'image_url' => $imageUrl,
+                ];
+            });
 
         return view('pages.home', compact('featuredProducts'));
     }
 
     public function products()
     {
-        $products = DB::table('Produkt as p')
-            ->leftJoin('Kategoria as k', 'k.id', '=', 'p.kategoriaId')
-            ->select('p.id', 'p.nazov', 'k.nazov as kategoria_nazov')
-            ->selectSub(function ($query) {
-                $query->from('VariantProduktu as v')
-                    ->select('v.cena')
-                    ->whereColumn('v.produktId', 'p.id')
-                    ->where(function ($variantQuery) {
-                        $variantQuery->whereNull('v.aktivny')->orWhere('v.aktivny', true);
-                    })
-                    ->orderBy('v.id')
-                    ->limit(1);
-            }, 'cena')
-            ->selectSub(function ($query) {
-                $query->from('VariantProduktu as v')
-                    ->selectRaw('COALESCE(SUM(v.skladom), 0)')
-                    ->whereColumn('v.produktId', 'p.id')
-                    ->where(function ($variantQuery) {
-                        $variantQuery->whereNull('v.aktivny')->orWhere('v.aktivny', true);
-                    });
-            }, 'stock_total')
-            ->selectSub(function ($query) {
-                $query->from('ProduktovyObrazok as po')
-                    ->select('po.url')
-                    ->whereColumn('po.produktId', 'p.id')
-                    ->orderByRaw('COALESCE(po.poradie, 9999)')
-                    ->orderBy('po.id')
-                    ->limit(1);
-            }, 'image_url')
-            ->where(function ($productQuery) {
-                $productQuery->whereNull('p.aktivny')->orWhere('p.aktivny', true);
-            })
-            ->orderBy('p.id')
+        $products = Produkt::query()
+            ->active()
+            ->with([
+                'category:id,nazov',
+                'variants' => function ($query) {
+                    $query->active()->orderBy('id');
+                },
+                'images' => function ($query) {
+                    $query->orderByRaw('COALESCE(poradie, 9999)')->orderBy('id');
+                },
+            ])
+            ->orderBy('id')
             ->get()
-            ->map(function ($product, $index) {
-                $product->image_url = ltrim((string) $product->image_url, '/');
-                $product->stock_status = ((int) $product->stock_total) > 0 ? 'in-stock' : 'out-of-stock';
-                $product->sort_order = $index + 1;
+            ->values()
+            ->map(function (Produkt $product, int $index) {
+                $variant = $product->variants->first();
+                $stockTotal = (int) $product->variants->sum('skladom');
+                $imageUrl = $this->sanitizeImagePath($product->images->first()?->url);
 
-                return $product;
+                return (object) [
+                    'id' => (int) $product->id,
+                    'nazov' => $product->nazov,
+                    'kategoria_nazov' => $product->category?->nazov,
+                    'cena' => (float) ($variant?->cena ?? $product->zakladna_cena ?? 0),
+                    'stock_total' => $stockTotal,
+                    'stock_status' => $stockTotal > 0 ? 'in-stock' : 'out-of-stock',
+                    'sort_order' => $index + 1,
+                    'image_url' => $imageUrl,
+                    'image_path' => $imageUrl !== '' ? $imageUrl : 'images/Products/prod-img-1.png',
+                ];
             });
 
-        return view('pages.products', compact('products'));
+        return view('pages.products', [
+            'products' => $products,
+            'realProductsCount' => $products->count(),
+        ]);
     }
 
     public function showProduct(int $productId)
     {
-        $product = DB::table('Produkt as p')
-            ->leftJoin('Kategoria as k', 'k.id', '=', 'p.kategoriaId')
-            ->select('p.id', 'p.nazov', 'p.popis', 'p.created_at', 'k.nazov as kategoria_nazov')
-            ->selectSub(function ($query) {
-                $query->from('VariantProduktu as v')
-                    ->select('v.id')
-                    ->whereColumn('v.produktId', 'p.id')
-                    ->where(function ($variantQuery) {
-                        $variantQuery->whereNull('v.aktivny')->orWhere('v.aktivny', true);
-                    })
-                    ->orderBy('v.id')
-                    ->limit(1);
-            }, 'variant_id')
-            ->selectSub(function ($query) {
-                $query->from('VariantProduktu as v')
-                    ->select('v.cena')
-                    ->whereColumn('v.produktId', 'p.id')
-                    ->where(function ($variantQuery) {
-                        $variantQuery->whereNull('v.aktivny')->orWhere('v.aktivny', true);
-                    })
-                    ->orderBy('v.id')
-                    ->limit(1);
-            }, 'cena')
-            ->selectSub(function ($query) {
-                $query->from('VariantProduktu as v')
-                    ->selectRaw('COALESCE(SUM(v.skladom), 0)')
-                    ->whereColumn('v.produktId', 'p.id')
-                    ->where(function ($variantQuery) {
-                        $variantQuery->whereNull('v.aktivny')->orWhere('v.aktivny', true);
-                    });
-            }, 'stock_total')
-            ->selectSub(function ($query) {
-                $query->from('ProduktovyObrazok as po')
-                    ->select('po.url')
-                    ->whereColumn('po.produktId', 'p.id')
-                    ->orderByRaw('COALESCE(po.poradie, 9999)')
-                    ->orderBy('po.id')
-                    ->limit(1);
-            }, 'image_url')
-            ->where('p.id', $productId)
-            ->where(function ($productQuery) {
-                $productQuery->whereNull('p.aktivny')->orWhere('p.aktivny', true);
-            })
-            ->first();
+        $productModel = Produkt::query()
+            ->active()
+            ->with([
+                'category:id,nazov',
+                'variants' => function ($query) {
+                    $query->active()->orderBy('id');
+                },
+                'images' => function ($query) {
+                    $query->orderByRaw('COALESCE(poradie, 9999)')->orderBy('id');
+                },
+            ])
+            ->find($productId);
 
-        abort_if(!$product, 404);
+        abort_if(!$productModel, 404);
 
-        $product->image_url = ltrim((string) $product->image_url, '/');
-        $product->stock_total = (int) $product->stock_total;
-        $product->stock_status = $product->stock_total > 0 ? 'In stock' : 'Out of stock';
+        $variant = $productModel->variants->first();
+        $stockTotal = (int) $productModel->variants->sum('skladom');
+        $imageUrl = $this->sanitizeImagePath($productModel->images->first()?->url);
+        $descriptionText = trim((string) ($productModel->popis ?? ''));
+        $descriptionText = $descriptionText !== ''
+            ? $descriptionText
+            : 'This product currently has no detailed description.';
+
+        $product = (object) [
+            'id' => (int) $productModel->id,
+            'nazov' => $productModel->nazov,
+            'popis' => $productModel->popis,
+            'created_at' => $productModel->created_at,
+            'kategoria_nazov' => $productModel->category?->nazov,
+            'variant_id' => $variant?->id,
+            'cena' => (float) ($variant?->cena ?? $productModel->zakladna_cena ?? 0),
+            'stock_total' => $stockTotal,
+            'stock_status' => $stockTotal > 0 ? 'In stock' : 'Out of stock',
+            'image_url' => $imageUrl,
+            'image_path' => $imageUrl !== '' ? $imageUrl : 'images/Products/prod-img-1.png',
+            'description_text' => $descriptionText,
+        ];
 
         return view('pages.product-detail', compact('product'));
     }
@@ -155,25 +139,22 @@ class StorefrontController extends Controller
 
         $variantIds = array_keys($cart);
 
-        $variantRows = DB::table('VariantProduktu as v')
-            ->join('Produkt as p', 'p.id', '=', 'v.produktId')
-            ->select('v.id', 'v.produktId', 'v.nazov as variant_nazov', 'v.cena', 'v.skladom', 'p.nazov as produkt_nazov')
-            ->selectSub(function ($query) {
-                $query->from('ProduktovyObrazok as po')
-                    ->select('po.url')
-                    ->whereColumn('po.produktId', 'p.id')
-                    ->orderByRaw('COALESCE(po.poradie, 9999)')
-                    ->orderBy('po.id')
-                    ->limit(1);
-            }, 'image_url')
-            ->whereIn('v.id', $variantIds)
-            ->where(function ($productQuery) {
-                $productQuery->whereNull('p.aktivny')->orWhere('p.aktivny', true);
-            })
-            ->where(function ($variantQuery) {
-                $variantQuery->whereNull('v.aktivny')->orWhere('v.aktivny', true);
-            })
+        $variantRows = VariantProduktu::query()
+            ->active()
+            ->with([
+                'product' => function ($query) {
+                    $query->active()->with([
+                        'images' => function ($imageQuery) {
+                            $imageQuery->orderByRaw('COALESCE(poradie, 9999)')->orderBy('id');
+                        },
+                    ]);
+                },
+            ])
+            ->whereIn('id', $variantIds)
             ->get()
+            ->filter(function (VariantProduktu $variant) {
+                return $variant->product !== null;
+            })
             ->keyBy('id');
 
         $cartItems = collect();
@@ -186,6 +167,7 @@ class StorefrontController extends Controller
                 continue;
             }
 
+            /** @var VariantProduktu $row */
             $row = $variantRows->get($variantIdInt);
             $maxStock = max(0, (int) $row->skladom);
 
@@ -197,17 +179,18 @@ class StorefrontController extends Controller
             $sanitizedCart[$variantIdInt] = $safeQty;
 
             $price = (float) $row->cena;
-            $imagePath = ltrim((string) $row->image_url, '/');
+            $imagePath = $this->sanitizeImagePath($row->product?->images->first()?->url);
 
             $cartItems->push((object) [
                 'variant_id' => $variantIdInt,
                 'product_id' => (int) $row->produktId,
-                'name' => $row->produkt_nazov,
+                'name' => $row->product?->nazov ?? 'Product',
                 'price' => $price,
                 'quantity' => $safeQty,
                 'line_total' => $price * $safeQty,
                 'max_stock' => $maxStock,
                 'image_url' => $imagePath,
+                'image_path' => $imagePath !== '' ? $imagePath : 'images/Products/prod-img-1.png',
             ]);
         }
 
@@ -226,18 +209,16 @@ class StorefrontController extends Controller
             'quantity' => ['required', 'integer', 'min:1', 'max:99'],
         ]);
 
-        $variant = DB::table('VariantProduktu as v')
-            ->join('Produkt as p', 'p.id', '=', 'v.produktId')
-            ->select('v.id', 'v.skladom')
-            ->where('p.id', $validated['product_id'])
-            ->where(function ($productQuery) {
-                $productQuery->whereNull('p.aktivny')->orWhere('p.aktivny', true);
-            })
-            ->where(function ($variantQuery) {
-                $variantQuery->whereNull('v.aktivny')->orWhere('v.aktivny', true);
-            })
-            ->orderBy('v.id')
-            ->first();
+        $product = Produkt::query()
+            ->active()
+            ->with([
+                'variants' => function ($query) {
+                    $query->active()->orderBy('id');
+                },
+            ])
+            ->find($validated['product_id']);
+
+        $variant = $product?->variants->first();
 
         if (!$variant) {
             return redirect()->back()->with('cart_error', 'Product variant was not found.');
@@ -250,9 +231,10 @@ class StorefrontController extends Controller
         }
 
         $cart = $request->session()->get('cart', []);
-        $existingQty = (int) ($cart[$variant->id] ?? 0);
+        $variantId = (int) $variant->id;
+        $existingQty = (int) ($cart[$variantId] ?? 0);
         $desiredQty = $existingQty + (int) $validated['quantity'];
-        $cart[$variant->id] = min($desiredQty, $maxStock);
+        $cart[$variantId] = min($desiredQty, $maxStock);
 
         $request->session()->put('cart', $cart);
 
@@ -281,15 +263,16 @@ class StorefrontController extends Controller
             return redirect()->route('cart.index')->with('cart_success', 'Item removed from cart.');
         }
 
-        $variant = DB::table('VariantProduktu as v')
-            ->select('v.skladom')
-            ->where('v.id', $variantId)
-            ->where(function ($variantQuery) {
-                $variantQuery->whereNull('v.aktivny')->orWhere('v.aktivny', true);
-            })
-            ->first();
+        $variant = VariantProduktu::query()
+            ->active()
+            ->with([
+                'product' => function ($query) {
+                    $query->active();
+                },
+            ])
+            ->find($variantId);
 
-        if (!$variant || (int) $variant->skladom <= 0) {
+        if (!$variant || !$variant->product || (int) $variant->skladom <= 0) {
             unset($cart[$variantId]);
             $request->session()->put('cart', $cart);
 
@@ -313,5 +296,12 @@ class StorefrontController extends Controller
         $request->session()->put('cart', $cart);
 
         return redirect()->route('cart.index')->with('cart_success', 'Item removed from cart.');
+    }
+
+    private function sanitizeImagePath(?string $imagePath): string
+    {
+        $sanitizedPath = ltrim((string) $imagePath, '/');
+
+        return (string) preg_replace('/^\.\.\//', '', $sanitizedPath);
     }
 }

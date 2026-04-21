@@ -30,17 +30,12 @@
         </li>
 
         @forelse ($cartItems as $item)
-          @php
-            $imagePath = $item->image_url ?: 'images/Products/prod-img-1.png';
-            $imagePath = preg_replace('/^\.\.\//', '', (string) $imagePath);
-          @endphp
-
           <li class="cart-item-container">
             <div class="cart-item shopping-flex">
               <div class="image">
                 <a href="{{ route('products.show', ['productId' => $item->product_id]) }}">
                   <div class="product-image">
-                    <img src="{{ asset($imagePath) }}" alt="{{ $item->name }}">
+                    <img src="{{ asset($item->image_path) }}" alt="{{ $item->name }}">
                   </div>
                 </a>
               </div>

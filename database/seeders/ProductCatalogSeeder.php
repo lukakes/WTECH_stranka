@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Kategoria;
+use App\Models\Produkt;
+use App\Models\ProduktovyObrazok;
+use App\Models\VariantProduktu;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ProductCatalogSeeder extends Seeder
 {
@@ -125,35 +128,26 @@ class ProductCatalogSeeder extends Seeder
         ];
 
         foreach ($products as $productData) {
-            $existingProduct = DB::table('Produkt')
-                ->where('nazov', $productData['nazov'])
-                ->first();
+            $product = Produkt::firstOrNew([
+                'nazov' => $productData['nazov'],
+            ]);
 
-            if ($existingProduct) {
-                $productId = (int) $existingProduct->id;
+            $product->fill([
+                'popis' => $productData['popis'],
+                'zakladna_cena' => $productData['zakladna_cena'],
+                'kategoriaId' => $productData['kategoriaId'],
+                'aktivny' => true,
+            ]);
 
-                DB::table('Produkt')
-                    ->where('id', $productId)
-                    ->update([
-                        'popis' => $productData['popis'],
-                        'zakladna_cena' => $productData['zakladna_cena'],
-                        'kategoriaId' => $productData['kategoriaId'],
-                        'aktivny' => true,
-                    ]);
-            } else {
-                $productId = DB::table('Produkt')->insertGetId([
-                    'nazov' => $productData['nazov'],
-                    'popis' => $productData['popis'],
-                    'zakladna_cena' => $productData['zakladna_cena'],
-                    'kategoriaId' => $productData['kategoriaId'],
-                    'aktivny' => true,
-                    'created_at' => now(),
-                ]);
+            if (!$product->exists) {
+                $product->created_at = now();
             }
 
-            DB::table('VariantProduktu')->updateOrInsert(
+            $product->save();
+
+            VariantProduktu::updateOrCreate(
                 [
-                    'produktId' => $productId,
+                    'produktId' => (int) $product->id,
                     'nazov' => 'Default',
                 ],
                 [
@@ -163,9 +157,9 @@ class ProductCatalogSeeder extends Seeder
                 ]
             );
 
-            DB::table('ProduktovyObrazok')->updateOrInsert(
+            ProduktovyObrazok::updateOrCreate(
                 [
-                    'produktId' => $productId,
+                    'produktId' => (int) $product->id,
                     'poradie' => 1,
                 ],
                 [
@@ -177,17 +171,12 @@ class ProductCatalogSeeder extends Seeder
 
     private function firstOrCreateCategory(string $name): int
     {
-        $existing = DB::table('Kategoria')
-            ->where('nazov', $name)
-            ->first();
-
-        if ($existing) {
-            return (int) $existing->id;
-        }
-
-        return DB::table('Kategoria')->insertGetId([
+        $category = Kategoria::firstOrCreate([
             'nazov' => $name,
+        ], [
             'parentId' => null,
         ]);
+
+        return (int) $category->id;
     }
 }

@@ -3,10 +3,6 @@
 @section('title', 'Products - Sticker Shop')
 
 @section('content')
-  @php
-    $realProductsCount = $products->count();
-  @endphp
-
   <main class="product-page container">
     <div class="breadcrumb"><a href="{{ route('home') }}">Home</a> &gt; All</div>
 
@@ -53,11 +49,6 @@
     <section class="product-page-contents">
       <div class="product-page-contents-grid">
         @forelse ($products as $product)
-          @php
-            $imagePath = $product->image_url ?: 'images/Products/prod-img-1.png';
-            $imagePath = preg_replace('/^\.\.\//', '', (string) $imagePath);
-          @endphp
-
           <a
             href="{{ route('products.show', ['productId' => $product->id]) }}"
             id="product-{{ $product->id }}"
@@ -69,7 +60,7 @@
             data-category="{{ \Illuminate\Support\Str::lower($product->kategoria_nazov ?: 'uncategorized') }}"
           >
             <div class="product-image">
-              <img src="{{ asset($imagePath) }}" alt="{{ $product->nazov }}">
+              <img src="{{ asset($product->image_path) }}" alt="{{ $product->nazov }}">
             </div>
             <div class="product-info">
               <p>{{ $product->nazov }}</p>
