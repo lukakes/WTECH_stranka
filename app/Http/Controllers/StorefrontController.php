@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Produkt;
 use App\Models\VariantProduktu;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -43,35 +44,108 @@ class StorefrontController extends Controller
         return view('pages.home', compact('featuredProducts'));
     }
 
-    public function products()
+    public function products(Request $request)
     {
-        $products = Produkt::query()
+        $category = strtolower((string) $request->query('category', 'all'));
+        $availability = strtolower((string) $request->query('availability', 'all'));
+        $sort = strtolower((string) $request->query('sort', 'featured'));
+        $search = trim((string) $request->query('q', ''));
+
+        $categoryOptions = [
+            'stickers' => 'Stickers',
+            'pins' => 'Pins',
+            'patches' => 'Patches',
+            'plushies' => 'Plushies',
+        ];
+
+        $allowedAvailability = ['all', 'in-stock', 'out-of-stock'];
+        $allowedSort = ['featured', 'name-asc', 'name-desc', 'price-asc', 'price-desc', 'newest'];
+
+        if ($category !== 'all' && !array_key_exists($category, $categoryOptions)) {
+            $category = 'all';
+        }
+
+        if (!in_array($availability, $allowedAvailability, true)) {
+            $availability = 'all';
+        }
+
+        if (!in_array($sort, $allowedSort, true)) {
+            $sort = 'featured';
+        }
+
+        $query = Produkt::query()
             ->active()
             ->with([
                 'category:id,nazov',
-                'variants' => function ($query) {
-                    $query->active()->orderBy('id');
-                },
                 'images' => function ($query) {
                     $query->orderByRaw('COALESCE(poradie, 9999)')->orderBy('id');
                 },
             ])
-            ->orderBy('id')
-            ->get()
-            ->values()
-            ->map(function (Produkt $product, int $index) {
-                $variant = $product->variants->first();
-                $stockTotal = (int) $product->variants->sum('skladom');
+            ->withMin([
+                'variants as min_variant_price' => function (Builder $query) {
+                    $query->active();
+                },
+            ], 'cena')
+            ->withSum([
+                'variants as active_stock_total' => function (Builder $query) {
+                    $query->active();
+                },
+            ], 'skladom');
+
+        if ($search !== '') {
+            $query->where(function (Builder $searchQuery) use ($search) {
+                $searchQuery
+                    ->where('nazov', 'like', "%{$search}%")
+                    ->orWhere('popis', 'like', "%{$search}%");
+            });
+        }
+
+        if ($category !== 'all') {
+            $query->whereHas('category', function (Builder $categoryQuery) use ($category, $categoryOptions) {
+                $categoryQuery->where('nazov', $categoryOptions[$category]);
+            });
+        }
+
+        if ($availability === 'in-stock') {
+            $query->whereHas('variants', function (Builder $variantQuery) {
+                $variantQuery->active()->where('skladom', '>', 0);
+            });
+        }
+
+        if ($availability === 'out-of-stock') {
+            $query->whereDoesntHave('variants', function (Builder $variantQuery) {
+                $variantQuery->active()->where('skladom', '>', 0);
+            });
+        }
+
+        if ($sort === 'name-asc') {
+            $query->orderBy('nazov')->orderBy('id');
+        } elseif ($sort === 'name-desc') {
+            $query->orderByDesc('nazov')->orderBy('id');
+        } elseif ($sort === 'price-asc') {
+            $query->orderByRaw('COALESCE(min_variant_price, zakladna_cena) asc')->orderBy('id');
+        } elseif ($sort === 'price-desc') {
+            $query->orderByRaw('COALESCE(min_variant_price, zakladna_cena) desc')->orderBy('id');
+        } elseif ($sort === 'newest') {
+            $query->orderByDesc('created_at')->orderByDesc('id');
+        } else {
+            $query->orderBy('id');
+        }
+
+        $products = $query
+            ->paginate(12)
+            ->withQueryString()
+            ->through(function (Produkt $product) {
                 $imageUrl = $this->sanitizeImagePath($product->images->first()?->url);
+                $stockTotal = max(0, (int) ($product->active_stock_total ?? 0));
 
                 return (object) [
                     'id' => (int) $product->id,
                     'nazov' => $product->nazov,
                     'kategoria_nazov' => $product->category?->nazov,
-                    'cena' => (float) ($variant?->cena ?? $product->zakladna_cena ?? 0),
+                    'cena' => (float) ($product->min_variant_price ?? $product->zakladna_cena ?? 0),
                     'stock_total' => $stockTotal,
                     'stock_status' => $stockTotal > 0 ? 'in-stock' : 'out-of-stock',
-                    'sort_order' => $index + 1,
                     'image_url' => $imageUrl,
                     'image_path' => $imageUrl !== '' ? $imageUrl : 'images/Products/prod-img-1.png',
                 ];
@@ -79,7 +153,14 @@ class StorefrontController extends Controller
 
         return view('pages.products', [
             'products' => $products,
-            'realProductsCount' => $products->count(),
+            'realProductsCount' => $products->total(),
+            'categoryOptions' => $categoryOptions,
+            'filters' => [
+                'q' => $search,
+                'category' => $category,
+                'availability' => $availability,
+                'sort' => $sort,
+            ],
         ]);
     }
 

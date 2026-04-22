@@ -114,6 +114,13 @@ input[type="number"] {
   width: 230px;
 }
 
+.store-search-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
 .search-box i {
   color: #2d7377;
 }
@@ -807,6 +814,9 @@ input[type="number"] {
 }
 
 .page-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 36px;
   height: 36px;
   border: 1px solid #ddd;
@@ -817,9 +827,10 @@ input[type="number"] {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-decoration: none;
 }
 
-.page-btn:hover:not(:disabled) {
+.page-btn:hover:not([aria-disabled="true"]) {
   background-color: var(--bgtint);
   border-color: #1d5f63;
 }
@@ -830,9 +841,11 @@ input[type="number"] {
   border-color: #1d5f63;
 }
 
-.page-btn:disabled {
+.page-btn:disabled,
+.page-btn[aria-disabled="true"] {
   opacity: 0.35;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 .page-dots {
