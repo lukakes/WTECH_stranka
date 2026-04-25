@@ -17,10 +17,12 @@
     <h1 class="logo">Super nazov</h1>
     <div class="header-row">
       <div class="search-box">
-        <form method="GET" action="{{ route('products') }}" class="store-search-form">
+        <form method="GET" action="{{ request()->routeIs('products.category') ? route('products.category', ['categorySlug' => request()->route('categorySlug')]) : route('products') }}" class="store-search-form">
           <i class="fa-solid fa-magnifying-glass"></i>
-          @if (request()->routeIs('products'))
-            <input type="hidden" name="category" value="{{ request('category', 'all') }}">
+          @if (request()->routeIs('products') || request()->routeIs('products.category'))
+            @unless (request()->routeIs('products.category'))
+              <input type="hidden" name="category" value="{{ request('category', 'all') }}">
+            @endunless
             <input type="hidden" name="availability" value="{{ request('availability', 'all') }}">
             <input type="hidden" name="sort" value="{{ request('sort', 'featured') }}">
           @endif
@@ -66,38 +68,7 @@
 
   <nav class="navbar">
     <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
-    <div class="dropdown">
-      <a href="{{ route('products') }}" class="{{ request()->routeIs('products') ? 'active' : '' }}">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
-      <div class="dropdown-content">
-        <div class="row">
-          <div class="column">
-            <h3>Category 1</h3>
-            <a href="{{ route('products') }}">Link 1</a>
-            <a href="{{ route('products') }}">Link 2</a>
-            <a href="{{ route('products') }}">Link 3</a>
-          </div>
-          <div class="column">
-            <h3>Category 2</h3>
-            <a href="{{ route('products') }}">Link 1</a>
-            <a href="{{ route('products') }}">Link 2</a>
-            <a href="{{ route('products') }}">Link 3</a>
-          </div>
-          <div class="column">
-            <h3>Category 3</h3>
-            <a href="{{ route('products') }}">Link 1</a>
-            <a href="{{ route('products') }}">Link 2</a>
-            <a href="{{ route('products') }}">Link 3</a>
-          </div>
-          <div class="dropdown-image">
-            <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Pytajte sa odpoviem, Fidlibum som vsetko viem">
-            <p><a href="{{ route('home') }}#contact-shop">Pytajte sa</a> vsetko viem, Fidlibum som vsetko viem!</p>
-          </div>
-        </div>
-        <div class="row">
-          <a href="{{ route('products') }}">See all products</a>
-        </div>
-      </div>
-    </div>
+    <x-store.shop-dropdown />
     <a href="{{ route('home') }}#about-shop">About</a>
     <a href="{{ route('home') }}#contact-shop">Contact</a>
   </nav>

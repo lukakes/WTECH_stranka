@@ -6,7 +6,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StorefrontController::class, 'home'])->name('home');
 Route::get('/products', [StorefrontController::class, 'products'])->name('products');
-Route::get('/products/{productId}', [StorefrontController::class, 'showProduct'])->name('products.show');
+Route::get('/products/{categorySlug}', [StorefrontController::class, 'products'])
+    ->whereIn('categorySlug', ['stickers', 'pins', 'patches', 'plushies'])
+    ->name('products.category');
+Route::get('/products/{productId}', [StorefrontController::class, 'showProduct'])
+    ->whereNumber('productId')
+    ->name('products.show');
 
 Route::get('/cart', [StorefrontController::class, 'cartIndex'])->name('cart.index');
 Route::post('/cart/add', [StorefrontController::class, 'cartAdd'])->name('cart.add');

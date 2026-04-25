@@ -9,7 +9,7 @@
       <div class="hero-popup">
         <h1>Welcome</h1>
         <p>Don't wait around for other people to grab your favorite pieces!</p>
-        <a href="#featured-products" class="btn">Shop now</a>
+        <a href="{{ route('products', ['sort' => 'featured', 'availability' => 'in-stock']) }}" class="btn">Shop now</a>
       </div>
       <div class="hero-grid">
         <img src="{{ asset('images/Homepage/cats/cat1.png') }}" alt="cat sticker">

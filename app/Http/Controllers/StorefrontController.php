@@ -44,13 +44,8 @@ class StorefrontController extends Controller
         return view('pages.home', compact('featuredProducts'));
     }
 
-    public function products(Request $request)
+    public function products(Request $request, ?string $categorySlug = null)
     {
-        $category = strtolower((string) $request->query('category', 'all'));
-        $availability = strtolower((string) $request->query('availability', 'all'));
-        $sort = strtolower((string) $request->query('sort', 'featured'));
-        $search = trim((string) $request->query('q', ''));
-
         $categoryOptions = [
             'stickers' => 'Stickers',
             'pins' => 'Pins',
@@ -58,10 +53,25 @@ class StorefrontController extends Controller
             'plushies' => 'Plushies',
         ];
 
+        $forcedCategory = $categorySlug !== null
+            ? strtolower(trim($categorySlug))
+            : null;
+
+        if ($forcedCategory !== null && !array_key_exists($forcedCategory, $categoryOptions)) {
+            abort(404);
+        }
+
+        $category = strtolower((string) $request->query('category', 'all'));
+        $availability = strtolower((string) $request->query('availability', 'all'));
+        $sort = strtolower((string) $request->query('sort', 'featured'));
+        $search = trim((string) $request->query('q', ''));
+
         $allowedAvailability = ['all', 'in-stock', 'out-of-stock'];
         $allowedSort = ['featured', 'name-asc', 'name-desc', 'price-asc', 'price-desc', 'newest'];
 
-        if ($category !== 'all' && !array_key_exists($category, $categoryOptions)) {
+        if ($forcedCategory !== null) {
+            $category = $forcedCategory;
+        } elseif ($category !== 'all' && !array_key_exists($category, $categoryOptions)) {
             $category = 'all';
         }
 
