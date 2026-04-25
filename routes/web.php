@@ -1,38 +1,31 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StorefrontController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('/pages/welcome');
+Route::get('/', [StorefrontController::class, 'home'])->name('home');
+Route::get('/products', [StorefrontController::class, 'products'])->name('products');
+Route::get('/products/{categorySlug}', [StorefrontController::class, 'products'])
+    ->whereIn('categorySlug', ['stickers', 'pins', 'patches', 'plushies'])
+    ->name('products.category');
+Route::get('/products/{productId}', [StorefrontController::class, 'showProduct'])
+    ->whereNumber('productId')
+    ->name('products.show');
+
+Route::get('/cart', [StorefrontController::class, 'cartIndex'])->name('cart.index');
+Route::post('/cart/add', [StorefrontController::class, 'cartAdd'])->name('cart.add');
+Route::post('/cart/update', [StorefrontController::class, 'cartUpdate'])->name('cart.update');
+Route::post('/cart/remove', [StorefrontController::class, 'cartRemove'])->name('cart.remove');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/home', function () {
-    $featuredProducts = [
-        [
-            'name' => 'Cosmic Cat Sticker',
-            'price' => 4.90,
-            'image' => 'images/Products/prod-img-1.png',
-            'href' => '#',
-        ],
-        [
-            'name' => 'Sleepy Bean Sticker',
-            'price' => 3.50,
-            'image' => 'images/Products/prod-img-2.png',
-            'href' => '#',
-        ],
-        [
-            'name' => 'Pixel Paw Sticker',
-            'price' => 5.20,
-            'image' => 'images/Products/prod-img-3.png',
-            'href' => '#',
-        ],
-        [
-            'name' => 'Retro Kitty Sticker',
-            'price' => 4.20,
-            'image' => 'images/Products/prod-img-4.png',
-            'href' => '#',
-        ],
-    ];
-
-    return view('/pages/home', compact('featuredProducts'));
-})->name('home');
+require __DIR__.'/auth.php';

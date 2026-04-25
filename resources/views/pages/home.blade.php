@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.store')
 
 @section('title', 'Home - Sticker Shop')
 
@@ -9,7 +9,7 @@
       <div class="hero-popup">
         <h1>Welcome</h1>
         <p>Don't wait around for other people to grab your favorite pieces!</p>
-        <a href="#featured-products" class="btn">Shop now</a>
+        <a href="{{ route('products', ['sort' => 'featured', 'availability' => 'in-stock']) }}" class="btn">Shop now</a>
       </div>
       <div class="hero-grid">
         <img src="{{ asset('images/Homepage/cats/cat1.png') }}" alt="cat sticker">
@@ -25,10 +25,16 @@
   <section class="featured-section" id="featured-products">
     <h2>Featured</h2>
     <div class="featured-grid container">
-      {{-- Later this will loop over real products --}}
-      @foreach(($featuredProducts ?? []) as $product)
-        <x-product-card :product="$product" />
-      @endforeach
+      @forelse($featuredProducts as $product)
+        <x-product-card
+          :href="route('home') . '#featured-products'"
+          :image="$product->image_url ?: 'images/Products/prod-img-1.png'"
+          :name="$product->nazov ?: 'Product'"
+          :price="$product->cena ?: 0"
+        />
+      @empty
+        <p>No featured products found.</p>
+      @endforelse
     </div>
   </section>
   <section class="promo-section">
@@ -39,11 +45,11 @@
             Samozrejme ze viem aky placeholder text tu mam napisat,
             aby to tematicky sedelo ku zvysku stranky
           </p>
-          <a href="#" class="btn">See more !</a>
+          <a href="{{ route('home') }}#about-shop" class="btn">See more !</a>
         </div>
 
         <div class="promo-image">
-          <img src="{{ asset('/images/Homepage/Squidward plush.png') }}" alt="Featured plush image">
+          <img src="{{ asset('images/Homepage/Squidward plush.png') }}" alt="Featured plush image">
         </div>
       </div>
     </section>
@@ -60,15 +66,15 @@
             Potom prišli ďakí veľkí chlapi<br>
             Spýtali sa, či ma niečo trápi
           </p>
-          <a href="#" class="btn">See more !</a>
+          <a href="{{ route('home') }}#contact-shop" class="btn">See more !</a>
         </div>
         
         <div class="promo-image">
-          <img src="{{ asset('/images/Homepage/Demon Slayer pins.png') }}" alt="demonslayer pins">
+          <img src="{{ asset('images/Homepage/Demon Slayer pins.png') }}" alt="demonslayer pins">
         </div>
       </div>
     </section>
-    <section class="bottom-space">
+    <section class="bottom-space" id="about-shop">
         <div class="bottom-text-row ">
           <div class="bottom-text-left-container">
             <h2>Here text</h2>
