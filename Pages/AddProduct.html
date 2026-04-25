@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Product</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="../CSS/style.css" />
+</head>
+<body>
+  <header class="top-header">
+    <h1 class="logo">Super nazov</h1>
+    <div class="header-row">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search the store" />
+      </div>
+
+      <div class="header-icons">
+        <div class="profile-menu">
+        <details class="profile-dropdown">
+          <summary aria-label="Open profile menu">
+            <i class="fa-regular fa-user"></i>
+          </summary>
+          <div class="profile-dropdown-content">
+            <a href="AdminLogin.html">Login</a>
+            <a href="Profile.html">Profile</a>
+            <a href="index.html">Logout</a>
+          </div>
+        </details>
+      </div>
+        <a href="ShoppingCart.html" class="cart-icon">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="AdminProducts.html">Shop</a>
+    <a href="AboutUS.html">About</a>
+    <a href="Contact.html">Contact</a>
+  </nav>
+
+  <main class="add-product-page container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> &gt;
+      <a href="AdminProducts.html">All Products</a> &gt;
+      Add Product
+    </div>
+
+    <div class="add-product-wrap">
+      <h1>Add Product</h1>
+
+      <form class="add-product-form">
+        <div>
+          <label for="product-title">Product title</label>
+          <input type="text" id="product-title" name="product-title" placeholder="Enter product title" />
+        </div>
+
+        <div>
+        <label>Product Images</label>
+
+        <div class="upload-grid">
+            <label for="product-image-1" class="upload-box">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Upload main image</span>
+            <small>Drag & drop or click to choose a file</small>
+            </label>
+            <input type="file" id="product-image-1" name="product-image-1" accept="image/*" hidden />
+
+            <label for="product-image-2" class="upload-box">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Upload second image</span>
+            <small>Drag & drop or click to choose a file</small>
+            </label>
+            <input type="file" id="product-image-2" name="product-image-2" accept="image/*" hidden />
+        </div>
+        </div>
+
+        <div class="add-product-two-cols">
+          <div>
+            <label for="product-price">Price</label>
+            <input type="number" id="product-price" name="product-price" placeholder="0.00" step="0.01" />
+          </div>
+
+          <div>
+            <label for="product-stock">Stock</label>
+            <input type="number" id="product-stock" name="product-stock" placeholder="0" />
+          </div>
+        </div>
+
+        <div>
+          <label for="product-category">Category</label>
+          <input type="text" id="product-category" name="product-category" placeholder="Pins, plushies, stickers..." />
+        </div>
+
+        <div>
+          <label for="product-status">Availability</label>
+          <select id="product-status" name="product-status">
+            <option value="in-stock">In stock</option>
+            <option value="out-of-stock">Out of stock</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="product-description">Description</label>
+          <textarea id="product-description" name="product-description" placeholder="Write the product description"></textarea>
+        </div>
+
+        <div class="add-product-actions">
+          <a href="AdminProducts.html" class="cart-link-back-to-shop">Back to products</a>
+          <button type="submit" class="btn">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-links">
+        <h2>Footer</h2>
+        <p>Link</p>
+        <p>Link</p>
+        <p>Link</p>
+      </div>
+
+      <div class="footer-socials">
+        <a href="#"><img src="../images/facebook.png" alt="Facebook"></a>
+        <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

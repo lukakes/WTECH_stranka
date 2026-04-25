@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sticker Shop</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="../CSS/style.css" />
+</head>
+<body>
+    <header class="top-header">
+        <h1 class="logo">Super nazov</h1>
+        <div class="header-row">
+            <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search the store" />
+            </div>
+
+            <div class="header-icons">
+            <div class="profile-menu">
+        <details class="profile-dropdown">
+          <summary aria-label="Open profile menu">
+            <i class="fa-regular fa-user"></i>
+          </summary>
+          <div class="profile-dropdown-content">
+            <a href="Login.html">Login</a>
+            <a href="Profile.html">Profile</a>
+            <a href="index.html">Logout</a>
+          </div>
+        </details>
+      </div>
+            <a href="ShoppingCart.html" class="cart-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-count">0</span>
+            </a>
+            </div>
+        </div>
+  </header>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <div class="dropdown">
+        <a href="Products.html">Shop <i class="fa-solid fa-chevron-down nav-arrow"></i></a>
+        <div class="dropdown-content">
+            <div class="row">
+                <div class="column">
+                    <h3>Category 1</h3>
+                    <a href="#">Link 1</a>
+                    <a href="#">Link 2</a>
+                    <a href="#">Link 3</a>
+                </div>
+                <div class="column">
+                    <h3>Category 2</h3>
+                    <a href="#">Link 1</a>
+                    <a href="#">Link 2</a>
+                    <a href="#">Link 3</a>
+                </div>
+                <div class="column">
+                    <h3>Category 3</h3>
+                    <a href="#">Link 1</a>
+                    <a href="#">Link 2</a>
+                    <a href="#">Link 3</a>
+                </div>
+                <div class="dropdown-image">
+                    <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Pytajte sa odpoviem, Fidlibum som vsetko viem">
+                    <p><a href="Contact.html">Pytajte sa</a> všetko viem, Fidlibum som všetko viem!</p>
+                </div>
+            </div>
+            <div class="row">
+                <a href="Products.html">See all products</a>
+            </div>
+        </div>
+    </div>
+    <a href="AboutUS.html">About</a>
+    <a href="Contact.html">Contact</a>
+  </nav>
+
+  <main class="product-page container">
+    <div class="breadcrumb"> <a href="index.html">Home</a> &gt; All</div>
+    <div class="product-header">
+        <h1 class="product-header-text">All Products</h1>
+    </div>
+    <div class="product-filters">
+        <div class="filter-group">
+            <label for="filter-availability">Availability</label>
+            <select id="filter-availability" name="availability">
+                <option value="all">All</option>
+                <option value="in-stock">In Stock</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="filter-sort">Sort by</label>
+            <select id="filter-sort" name="sort">
+                <option value="featured">Featured</option>
+                <option value="name-asc">Name: A-Z</option>
+                <option value="name-desc">Name: Z-A</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="newest">Newest</option>
+            </select>
+        </div>
+
+        <p class="filter-count">Showing <span id="product-count">12</span> products</p>
+    </div>
+    <section class="product-page-contents">
+        <div class="product-page-contents-grid">
+            <a href="ProductDetail.html" class="product-card" data-name="Bunny enamel pin" data-price="4.59" data-order="1" data-stock="in-stock">
+                <div class="product-image">
+                    <img src="../images/Products/prod-img-1.png" alt="Bunny enamel pin">
+                </div>
+                <div class="product-info">
+                    <p>Bunny enamel pin</p>
+                    <p>€4,59</p>
+                </div>
+            </a>
+
+            <a href="ProductDetail.html" class="product-card" data-name="Cute cat pin" data-price="3.40" data-order="2" data-stock="out-of-stock">
+                <div class="product-image">
+                    <img src="../images/Products/prod-img-2.png" alt="Cute cat pin">
+                </div>
+                <div class="product-info">
+                    <p>Cute cat pin</p>
+                    <p>€3,40</p>
+                </div>
+            </a>
+
+            <a href="ProductDetail.html" class="product-card" data-name="Fish patches" data-price="4.20" data-order="3" data-stock="in-stock">
+                <div class="product-image">
+                    <img src="../images/Products/prod-img-3.png" alt="Cute cat pin">
+                </div>
+                <div class="product-info">
+                    <p>Fish patches</p>
+                    <p>€4,20</p>
+                </div>
+            </a>
+
+            <a href="ProductDetail.html" class="product-card" data-name="Game Over Pin" data-price="3.90" data-order="4" data-stock="in-stock">
+                <div class="product-image">
+                    <img src="../images/Products/prod-img-4.png" alt="Cute cat pin">
+                </div>
+                <div class="product-info">
+                    <p>Game Over Pin</p>
+                    <p>€3,90</p>
+                </div>
+            </a>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"></div>
+                <div class="product-info">
+                    <p>Description</p>
+                    <p>Price</p>
+                </div>
+            </div>
+        </div>
+        <div class="pagination">
+            <button class="page-btn prev-btn" disabled>
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <span class="page-dots">...</span>
+            <button class="page-btn">8</button>
+
+            <button class="page-btn next-btn">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </section>
+  </main>
+  <footer>
+  <div class="footer-content">
+    <div class="footer-links">
+      <h2>Footer</h2>
+      <p>Link</p>
+      <p>Link</p>
+      <p>Link</p>
+    </div>
+
+    <div class="footer-socials">
+      <a href="#"><img src="../images/facebook.png" alt="Facebook"></a>
+      <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+      <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const sortSelect = document.getElementById("filter-sort");
+  const availabilitySelect = document.getElementById("filter-availability");
+  const grid = document.querySelector(".product-page-contents-grid");
+  const countEl = document.getElementById("product-count");
+
+  const allCards = Array.from(grid.querySelectorAll(".product-card"));
+  const realCards = allCards.filter(card => card.dataset.name && card.dataset.price);
+  const placeholders = allCards.filter(card => !card.dataset.name || !card.dataset.price);
+
+  function updateProducts() {
+    let filtered = [...realCards];
+
+    if (availabilitySelect.value === "in-stock") {
+      filtered = filtered.filter(card => card.dataset.stock === "in-stock");
+    } else if (availabilitySelect.value === "out-of-stock") {
+      filtered = filtered.filter(card => card.dataset.stock === "out-of-stock");
+    }
+
+    filtered.sort((a, b) => {
+      const nameA = a.dataset.name.toLowerCase();
+      const nameB = b.dataset.name.toLowerCase();
+      const priceA = parseFloat(a.dataset.price);
+      const priceB = parseFloat(b.dataset.price);
+      const orderA = parseInt(a.dataset.order) || 0;
+      const orderB = parseInt(b.dataset.order) || 0;
+
+      switch (sortSelect.value) {
+        case "name-asc":
+          return nameA.localeCompare(nameB);
+        case "name-desc":
+          return nameB.localeCompare(nameA);
+        case "price-asc":
+          return priceA - priceB;
+        case "price-desc":
+          return priceB - priceA;
+        case "newest":
+          return orderB - orderA;
+        case "featured":
+        default:
+          return orderA - orderB;
+      }
+    });
+
+    grid.innerHTML = "";
+
+    filtered.forEach(card => grid.appendChild(card));
+    placeholders.forEach(card => grid.appendChild(card));
+
+    countEl.textContent = filtered.length;
+  }
+
+  sortSelect.addEventListener("change", updateProducts);
+  availabilitySelect.addEventListener("change", updateProducts);
+
+  updateProducts();
+</script>
+<script>
+        const dropdown = document.querySelector('.dropdown');
+        let closeTimer;
+
+        dropdown.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimer);
+        dropdown.classList.add('open');
+        });
+
+        dropdown.addEventListener('mouseleave', () => {
+        closeTimer = setTimeout(() => {
+            dropdown.classList.remove('open');
+        }, 300);
+        });
+</script>
+
+</body>
