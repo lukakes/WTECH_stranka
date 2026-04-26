@@ -1,17 +1,22 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.store')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
+@section('title', 'Dashboard')
+
+@section('content')
+<main class="profile-page container">
+    <div class="breadcrumb"><a href="{{ route('home') }}">Home</a> &gt; Dashboard</div>
+
+    <section class="profile-card">
+        <div class="profile-card-header">
+            <h1>Dashboard</h1>
+            <p>You are logged in. Manage your account and explore the store from here.</p>
         </div>
-    </div>
-</x-app-layout>
+
+        <div class="profile-actions">
+            <a href="{{ route('profile.edit') }}" class="btn">Manage profile</a>
+            <a href="{{ route('products') }}" class="btn profile-btn-secondary">Browse products</a>
+            <a href="{{ route('cart.index') }}" class="btn profile-btn-secondary">Open cart</a>
+        </div>
+    </section>
+</main>
+@endsection
