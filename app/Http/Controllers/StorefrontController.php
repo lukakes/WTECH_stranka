@@ -133,9 +133,9 @@ class StorefrontController extends Controller
         } elseif ($sort === 'name-desc') {
             $query->orderByDesc('nazov')->orderBy('id');
         } elseif ($sort === 'price-asc') {
-            $query->orderByRaw('COALESCE(min_variant_price, zakladna_cena) asc')->orderBy('id');
+            $query->orderBy('zakladna_cena', 'asc')->orderBy('id');
         } elseif ($sort === 'price-desc') {
-            $query->orderByRaw('COALESCE(min_variant_price, zakladna_cena) desc')->orderBy('id');
+            $query->orderByDesc('zakladna_cena')->orderBy('id');
         } elseif ($sort === 'newest') {
             $query->orderByDesc('created_at')->orderByDesc('id');
         } else {

@@ -27,7 +27,7 @@
     <div class="featured-grid container">
       @forelse($featuredProducts as $product)
         <x-product-card
-          :href="route('home') . '#featured-products'"
+          :href="route('products.show', $product->id) ?: '#featured-products'"
           :image="$product->image_url ?: 'images/Products/prod-img-1.png'"
           :name="$product->nazov ?: 'Product'"
           :price="$product->cena ?: 0"
