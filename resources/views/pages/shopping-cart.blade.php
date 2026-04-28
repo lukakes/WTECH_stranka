@@ -111,7 +111,7 @@
       </ul>
 
       <div class="cart-payment">
-        <a href="#" class="btn">Check out</a>
+        <a href="{{ route('checkout') }}" class="btn">Check out</a>
         <a href="{{ route('products') }}" class="cart-link-back-to-shop">Continue shopping</a>
       </div>
     </div>

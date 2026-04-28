@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Produkt;
 use App\Models\VariantProduktu;
+use App\Services\CartService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -217,15 +218,128 @@ class StorefrontController extends Controller
         return view('pages.product-detail', compact('product'));
     }
 
-    public function cartIndex(Request $request)
+    public function cartIndex(Request $request, CartService $cartService)
     {
-        $cart = $request->session()->get('cart', []);
+        return view('pages.shopping-cart', $this->buildCartData($request, $cartService));
+    }
+
+    public function checkout(Request $request, CartService $cartService)
+    {
+        $cartData = $this->buildCartData($request, $cartService);
+        $deliveryFee = $cartData['cartItems']->isEmpty() ? 0.0 : 4.90;
+        $total = (float) $cartData['subtotal'] + $deliveryFee;
+
+        return view('pages.checkout', $cartData + [
+            'deliveryFee' => $deliveryFee,
+            'total' => $total,
+        ]);
+    }
+
+    public function cartAdd(Request $request, CartService $cartService)
+    {
+        $validated = $request->validate([
+            'product_id' => ['required', 'integer', 'min:1'],
+            'quantity' => ['required', 'integer', 'min:1', 'max:99'],
+        ]);
+
+        $product = Produkt::query()
+            ->active()
+            ->with([
+                'variants' => function ($query) {
+                    $query->active()->orderBy('id');
+                },
+            ])
+            ->find($validated['product_id']);
+
+        $variant = $product?->variants->first();
+
+        if (!$variant) {
+            return redirect()->back()->with('cart_error', 'Product variant was not found.');
+        }
+
+        $maxStock = max(0, (int) $variant->skladom);
+
+        if ($maxStock === 0) {
+            return redirect()->back()->with('cart_error', 'This product is currently out of stock.');
+        }
+
+        $cart = $cartService->getCart($request);
+        $variantId = (int) $variant->id;
+        $existingQty = (int) ($cart[$variantId] ?? 0);
+        $desiredQty = $existingQty + (int) $validated['quantity'];
+        $cart[$variantId] = min($desiredQty, $maxStock);
+
+        $cartService->storeCart($request, $cart);
+
+        return redirect()->route('cart.index')->with('cart_success', 'Product added to cart.');
+    }
+
+    public function cartUpdate(Request $request, CartService $cartService)
+    {
+        $validated = $request->validate([
+            'variant_id' => ['required', 'integer', 'min:1'],
+            'quantity' => ['required', 'integer', 'min:0', 'max:99'],
+        ]);
+
+        $cart = $cartService->getCart($request);
+        $variantId = (int) $validated['variant_id'];
+        $quantity = (int) $validated['quantity'];
+
+        if (!array_key_exists($variantId, $cart)) {
+            return redirect()->route('cart.index');
+        }
+
+        if ($quantity === 0) {
+            unset($cart[$variantId]);
+            $cartService->storeCart($request, $cart);
+
+            return redirect()->route('cart.index')->with('cart_success', 'Item removed from cart.');
+        }
+
+        $variant = VariantProduktu::query()
+            ->active()
+            ->with([
+                'product' => function ($query) {
+                    $query->active();
+                },
+            ])
+            ->find($variantId);
+
+        if (!$variant || !$variant->product || (int) $variant->skladom <= 0) {
+            unset($cart[$variantId]);
+            $cartService->storeCart($request, $cart);
+
+            return redirect()->route('cart.index')->with('cart_error', 'Selected item is no longer available.');
+        }
+
+        $cart[$variantId] = min($quantity, (int) $variant->skladom);
+        $cartService->storeCart($request, $cart);
+
+        return redirect()->route('cart.index')->with('cart_success', 'Cart updated.');
+    }
+
+    public function cartRemove(Request $request, CartService $cartService)
+    {
+        $validated = $request->validate([
+            'variant_id' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $cart = $cartService->getCart($request);
+        unset($cart[(int) $validated['variant_id']]);
+        $cartService->storeCart($request, $cart);
+
+        return redirect()->route('cart.index')->with('cart_success', 'Item removed from cart.');
+    }
+
+    private function buildCartData(Request $request, CartService $cartService): array
+    {
+        $cart = $cartService->getCart($request);
 
         if (empty($cart)) {
-            return view('pages.shopping-cart', [
+            return [
                 'cartItems' => collect(),
                 'subtotal' => 0,
-            ]);
+            ];
         }
 
         $variantIds = array_keys($cart);
@@ -285,108 +399,12 @@ class StorefrontController extends Controller
             ]);
         }
 
-        $request->session()->put('cart', $sanitizedCart);
+        $cartService->storeCart($request, $sanitizedCart);
 
-        return view('pages.shopping-cart', [
+        return [
             'cartItems' => $cartItems,
             'subtotal' => (float) $cartItems->sum('line_total'),
-        ]);
-    }
-
-    public function cartAdd(Request $request)
-    {
-        $validated = $request->validate([
-            'product_id' => ['required', 'integer', 'min:1'],
-            'quantity' => ['required', 'integer', 'min:1', 'max:99'],
-        ]);
-
-        $product = Produkt::query()
-            ->active()
-            ->with([
-                'variants' => function ($query) {
-                    $query->active()->orderBy('id');
-                },
-            ])
-            ->find($validated['product_id']);
-
-        $variant = $product?->variants->first();
-
-        if (!$variant) {
-            return redirect()->back()->with('cart_error', 'Product variant was not found.');
-        }
-
-        $maxStock = max(0, (int) $variant->skladom);
-
-        if ($maxStock === 0) {
-            return redirect()->back()->with('cart_error', 'This product is currently out of stock.');
-        }
-
-        $cart = $request->session()->get('cart', []);
-        $variantId = (int) $variant->id;
-        $existingQty = (int) ($cart[$variantId] ?? 0);
-        $desiredQty = $existingQty + (int) $validated['quantity'];
-        $cart[$variantId] = min($desiredQty, $maxStock);
-
-        $request->session()->put('cart', $cart);
-
-        return redirect()->route('cart.index')->with('cart_success', 'Product added to cart.');
-    }
-
-    public function cartUpdate(Request $request)
-    {
-        $validated = $request->validate([
-            'variant_id' => ['required', 'integer', 'min:1'],
-            'quantity' => ['required', 'integer', 'min:0', 'max:99'],
-        ]);
-
-        $cart = $request->session()->get('cart', []);
-        $variantId = (int) $validated['variant_id'];
-        $quantity = (int) $validated['quantity'];
-
-        if (!array_key_exists($variantId, $cart)) {
-            return redirect()->route('cart.index');
-        }
-
-        if ($quantity === 0) {
-            unset($cart[$variantId]);
-            $request->session()->put('cart', $cart);
-
-            return redirect()->route('cart.index')->with('cart_success', 'Item removed from cart.');
-        }
-
-        $variant = VariantProduktu::query()
-            ->active()
-            ->with([
-                'product' => function ($query) {
-                    $query->active();
-                },
-            ])
-            ->find($variantId);
-
-        if (!$variant || !$variant->product || (int) $variant->skladom <= 0) {
-            unset($cart[$variantId]);
-            $request->session()->put('cart', $cart);
-
-            return redirect()->route('cart.index')->with('cart_error', 'Selected item is no longer available.');
-        }
-
-        $cart[$variantId] = min($quantity, (int) $variant->skladom);
-        $request->session()->put('cart', $cart);
-
-        return redirect()->route('cart.index')->with('cart_success', 'Cart updated.');
-    }
-
-    public function cartRemove(Request $request)
-    {
-        $validated = $request->validate([
-            'variant_id' => ['required', 'integer', 'min:1'],
-        ]);
-
-        $cart = $request->session()->get('cart', []);
-        unset($cart[(int) $validated['variant_id']]);
-        $request->session()->put('cart', $cart);
-
-        return redirect()->route('cart.index')->with('cart_success', 'Item removed from cart.');
+        ];
     }
 
     private function sanitizeImagePath(?string $imagePath): string

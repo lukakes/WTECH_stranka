@@ -17,6 +17,7 @@ Route::get('/cart', [StorefrontController::class, 'cartIndex'])->name('cart.inde
 Route::post('/cart/add', [StorefrontController::class, 'cartAdd'])->name('cart.add');
 Route::post('/cart/update', [StorefrontController::class, 'cartUpdate'])->name('cart.update');
 Route::post('/cart/remove', [StorefrontController::class, 'cartRemove'])->name('cart.remove');
+Route::get('/checkout', [StorefrontController::class, 'checkout'])->name('checkout');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
