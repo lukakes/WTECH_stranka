@@ -16,6 +16,11 @@
             <a href="{{ route('profile.edit') }}" class="btn">Manage profile</a>
             <a href="{{ route('products') }}" class="btn profile-btn-secondary">Browse products</a>
             <a href="{{ route('cart.index') }}" class="btn profile-btn-secondary">Open cart</a>
+            @auth
+                @if (auth()->user()->isAdmin())
+                    <a href="{{ route('admin.products.index') }}" class="btn profile-btn-secondary">Admin products</a>
+                @endif
+            @endauth
         </div>
     </section>
 </main>

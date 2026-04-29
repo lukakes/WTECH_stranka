@@ -40,6 +40,9 @@
               @auth
                 <a href="{{ route('profile.edit') }}">Profile</a>
                 <a href="{{ route('dashboard') }}">Dashboard</a>
+                @if (auth()->user()->isAdmin())
+                  <a href="{{ route('admin.products.index') }}">Admin products</a>
+                @endif
                 <form method="POST" action="{{ route('logout') }}">
                   @csrf
                   <button type="submit">Logout</button>
