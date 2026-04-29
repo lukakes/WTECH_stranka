@@ -39,6 +39,17 @@ class CartService
         $request->session()->put('cart', $normalizedCart);
     }
 
+    public function clearCart(Request $request): void
+    {
+        if (Auth::check()) {
+            /** @var User $user */
+            $user = Auth::user();
+            CartItem::where('user_id', $user->id)->delete();
+        }
+
+        $request->session()->forget('cart');
+    }
+
     public function mergeSessionIntoUserCart(Request $request, User $user): void
     {
         $sessionCart = $this->getSessionCart($request);

@@ -2,18 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Adresa;
+use App\Models\Doprava;
+use App\Models\Objednavka;
+use App\Models\Platba;
+use App\Models\PolozkaObjednavky;
 use App\Models\Produkt;
 use App\Models\VariantProduktu;
+use App\Models\Zakaznik;
 use App\Services\CartService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 
 class StorefrontController extends Controller
 {
     public function home()
     {
-        if (!Schema::hasTable('Produkt')) {
+        if (!Schema::hasTable('produkty')) {
             return view('pages.home', ['featuredProducts' => collect()]);
         }
 
@@ -226,12 +235,159 @@ class StorefrontController extends Controller
     public function checkout(Request $request, CartService $cartService)
     {
         $cartData = $this->buildCartData($request, $cartService);
-        $deliveryFee = $cartData['cartItems']->isEmpty() ? 0.0 : 4.90;
-        $total = (float) $cartData['subtotal'] + $deliveryFee;
+        $deliveryOptions = $this->activeDeliveryOptions();
+        $paymentOptions = $this->activePaymentOptions();
+        $selectedDeliveryId = (int) old('delivery_id', $deliveryOptions->first()?->id ?? 0);
+        $selectedPaymentId = (int) old('payment_id', $paymentOptions->first()?->id ?? 0);
+        $selectedDelivery = $deliveryOptions->firstWhere('id', $selectedDeliveryId) ?? $deliveryOptions->first();
+        $selectedPayment = $paymentOptions->firstWhere('id', $selectedPaymentId) ?? $paymentOptions->first();
+        $deliveryFee = $cartData['cartItems']->isEmpty() ? 0.0 : (float) ($selectedDelivery?->cena ?? 0);
+        $paymentFee = $cartData['cartItems']->isEmpty() ? 0.0 : (float) ($selectedPayment?->poplatok ?? 0);
+        $total = (float) $cartData['subtotal'] + $deliveryFee + $paymentFee;
 
         return view('pages.checkout', $cartData + [
+            'deliveryOptions' => $deliveryOptions,
+            'paymentOptions' => $paymentOptions,
+            'selectedDeliveryId' => $selectedDeliveryId,
+            'selectedPaymentId' => $selectedPaymentId,
             'deliveryFee' => $deliveryFee,
+            'paymentFee' => $paymentFee,
             'total' => $total,
+        ]);
+    }
+
+    public function checkoutStore(Request $request, CartService $cartService)
+    {
+        $deliveryOptions = $this->activeDeliveryOptions();
+        $paymentOptions = $this->activePaymentOptions();
+
+        $validated = $request->validate([
+            'first_name' => ['required', 'string', 'max:100'],
+            'last_name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:150'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'address' => ['required', 'string', 'max:150'],
+            'city' => ['required', 'string', 'max:100'],
+            'postal' => ['required', 'string', 'max:20'],
+            'delivery_id' => ['required', 'integer', Rule::in($deliveryOptions->pluck('id')->all())],
+            'payment_id' => ['required', 'integer', Rule::in($paymentOptions->pluck('id')->all())],
+            'note' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $cart = $cartService->getCart($request);
+
+        if (empty($cart)) {
+            return redirect()->route('cart.index')->with('cart_error', 'Your cart is empty.');
+        }
+
+        $delivery = $deliveryOptions->firstWhere('id', (int) $validated['delivery_id']);
+        $payment = $paymentOptions->firstWhere('id', (int) $validated['payment_id']);
+
+        try {
+            $order = DB::transaction(function () use ($cart, $cartService, $delivery, $payment, $request, $validated) {
+                $variants = VariantProduktu::query()
+                    ->active()
+                    ->with([
+                        'product' => function ($query) {
+                            $query->active();
+                        },
+                    ])
+                    ->whereIn('id', array_keys($cart))
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id');
+
+                $subtotal = 0.0;
+                $orderLines = [];
+
+                foreach ($cart as $variantId => $quantity) {
+                    $variant = $variants->get((int) $variantId);
+
+                    if (!$variant || !$variant->product || (int) $variant->skladom < (int) $quantity) {
+                        throw new \RuntimeException('Some cart items are no longer available in the requested quantity.');
+                    }
+
+                    $price = (float) $variant->cena;
+                    $lineTotal = $price * (int) $quantity;
+                    $subtotal += $lineTotal;
+
+                    $orderLines[] = [
+                        'variant' => $variant,
+                        'quantity' => (int) $quantity,
+                        'price' => $price,
+                        'line_total' => $lineTotal,
+                    ];
+                }
+
+                $fullName = trim($validated['first_name'].' '.$validated['last_name']);
+
+                $customer = Zakaznik::updateOrCreate(
+                    ['email' => $validated['email']],
+                    [
+                        'meno' => $fullName,
+                        'telefon' => $validated['phone'] ?? null,
+                        'created_at' => Date::now(),
+                    ]
+                );
+
+                $address = Adresa::create([
+                    'zakaznik_id' => $customer->id,
+                    'meno' => $fullName,
+                    'ulica' => $validated['address'],
+                    'mesto' => $validated['city'],
+                    'psc' => $validated['postal'],
+                    'stat' => 'Slovakia',
+                    'created_at' => Date::now(),
+                ]);
+
+                $order = Objednavka::create([
+                    'zakaznik_id' => $customer->id,
+                    'adresa_id' => $address->id,
+                    'doprava_id' => $delivery->id,
+                    'platba_id' => $payment->id,
+                    'stav' => 'PENDING',
+                    'subtotal' => $subtotal,
+                    'doprava_cena' => (float) $delivery->cena,
+                    'platba_poplatok' => (float) $payment->poplatok,
+                    'total' => $subtotal + (float) $delivery->cena + (float) $payment->poplatok,
+                    'created_at' => Date::now(),
+                ]);
+
+                foreach ($orderLines as $line) {
+                    PolozkaObjednavky::create([
+                        'objednavka_id' => $order->id,
+                        'variant_id' => $line['variant']->id,
+                        'mnozstvo' => $line['quantity'],
+                        'jednotkova_cena' => $line['price'],
+                        'celkova_cena' => $line['line_total'],
+                    ]);
+
+                    $line['variant']->decrement('skladom', $line['quantity']);
+                }
+
+                $cartService->clearCart($request);
+
+                return $order;
+            });
+        } catch (\RuntimeException $exception) {
+            return redirect()
+                ->route('cart.index')
+                ->with('cart_error', $exception->getMessage());
+        }
+
+        return redirect()
+            ->route('checkout.success', ['order' => $order->id])
+            ->with('checkout_success', 'Order was created successfully.');
+    }
+
+    public function checkoutSuccess(int $order)
+    {
+        $orderModel = Objednavka::query()
+            ->with(['zakaznik', 'polozky.variant.product'])
+            ->findOrFail($order);
+
+        return view('pages.checkout-success', [
+            'order' => $orderModel,
         ]);
     }
 
@@ -388,7 +544,7 @@ class StorefrontController extends Controller
 
             $cartItems->push((object) [
                 'variant_id' => $variantIdInt,
-                'product_id' => (int) $row->produktId,
+                'product_id' => (int) $row->produkt_id,
                 'name' => $row->product?->nazov ?? 'Product',
                 'price' => $price,
                 'quantity' => $safeQty,
@@ -405,6 +561,64 @@ class StorefrontController extends Controller
             'cartItems' => $cartItems,
             'subtotal' => (float) $cartItems->sum('line_total'),
         ];
+    }
+
+    private function activeDeliveryOptions()
+    {
+        $options = Doprava::query()
+            ->active()
+            ->orderBy('cena')
+            ->orderBy('id')
+            ->get();
+
+        if ($options->isNotEmpty()) {
+            return $options;
+        }
+
+        Doprava::updateOrCreate(
+            ['nazov' => 'Courier delivery'],
+            ['cena' => 4.90, 'odhad_dni' => 3, 'aktivna' => true]
+        );
+
+        Doprava::updateOrCreate(
+            ['nazov' => 'Pickup point'],
+            ['cena' => 2.90, 'odhad_dni' => 4, 'aktivna' => true]
+        );
+
+        return Doprava::query()
+            ->active()
+            ->orderBy('cena')
+            ->orderBy('id')
+            ->get();
+    }
+
+    private function activePaymentOptions()
+    {
+        $options = Platba::query()
+            ->active()
+            ->orderBy('poplatok')
+            ->orderBy('id')
+            ->get();
+
+        if ($options->isNotEmpty()) {
+            return $options;
+        }
+
+        Platba::updateOrCreate(
+            ['sposob_platby' => 'Card payment'],
+            ['poplatok' => 0.00, 'aktivna' => true]
+        );
+
+        Platba::updateOrCreate(
+            ['sposob_platby' => 'Cash on delivery'],
+            ['poplatok' => 1.50, 'aktivna' => true]
+        );
+
+        return Platba::query()
+            ->active()
+            ->orderBy('poplatok')
+            ->orderBy('id')
+            ->get();
     }
 
     private function sanitizeImagePath(?string $imagePath): string

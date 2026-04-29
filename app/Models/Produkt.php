@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Produkt extends Model
 {
-    protected $table = 'Produkt';
+    protected $table = 'produkty';
 
     public $timestamps = false;
 
@@ -18,7 +18,7 @@ class Produkt extends Model
         'nazov',
         'popis',
         'zakladna_cena',
-        'kategoriaId',
+        'kategoria_id',
         'aktivny',
         'created_at',
     ];
@@ -38,23 +38,23 @@ class Produkt extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Kategoria::class, 'kategoriaId');
+        return $this->belongsTo(Kategoria::class, 'kategoria_id');
     }
 
     public function variants(): HasMany
     {
-        return $this->hasMany(VariantProduktu::class, 'produktId');
+        return $this->hasMany(VariantProduktu::class, 'produkt_id');
     }
 
     public function firstActiveVariant(): HasOne
     {
-        return $this->hasOne(VariantProduktu::class, 'produktId')
+        return $this->hasOne(VariantProduktu::class, 'produkt_id')
             ->active()
             ->orderBy('id');
     }
 
     public function images(): HasMany
     {
-        return $this->hasMany(ProduktovyObrazok::class, 'produktId');
+        return $this->hasMany(ProduktovyObrazok::class, 'produkt_id');
     }
 }

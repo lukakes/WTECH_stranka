@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'variant_id']);
-            $table->foreign('variant_id')->references('id')->on('VariantProduktu')->cascadeOnDelete();
+            $table->foreign('variant_id')->references('id')->on('varianty_produktu')->cascadeOnDelete();
         });
     }
 

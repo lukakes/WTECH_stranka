@@ -18,6 +18,10 @@ Route::post('/cart/add', [StorefrontController::class, 'cartAdd'])->name('cart.a
 Route::post('/cart/update', [StorefrontController::class, 'cartUpdate'])->name('cart.update');
 Route::post('/cart/remove', [StorefrontController::class, 'cartRemove'])->name('cart.remove');
 Route::get('/checkout', [StorefrontController::class, 'checkout'])->name('checkout');
+Route::post('/checkout', [StorefrontController::class, 'checkoutStore'])->name('checkout.store');
+Route::get('/checkout/success/{order}', [StorefrontController::class, 'checkoutSuccess'])
+    ->whereNumber('order')
+    ->name('checkout.success');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
