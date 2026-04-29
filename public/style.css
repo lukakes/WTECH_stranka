@@ -1388,7 +1388,7 @@ body.login-body .login-page {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .quantity-picker {
@@ -1444,6 +1444,16 @@ body.login-body .login-page {
 
 .detail-outline-btn:hover {
   background-color: var(--bgtint);
+}
+
+.remove-btn {
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+}
+
+.remove-btn:hover {
+  background-color: #e74c3c;
+  color: #fff;
 }
 
 .detail-cart-btn {

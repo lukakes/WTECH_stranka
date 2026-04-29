@@ -184,7 +184,7 @@ class StorefrontController extends Controller
         ]);
     }
 
-    public function showProduct(int $productId)
+    public function showProduct(Request $request, CartService $cartService, int $productId)
     {
         $productModel = Produkt::query()
             ->active()
@@ -208,6 +208,8 @@ class StorefrontController extends Controller
         $descriptionText = $descriptionText !== ''
             ? $descriptionText
             : 'This product currently has no detailed description.';
+        $cart = $cartService->getCart($request);
+        $variantId = $variant?->id !== null ? (int) $variant->id : null;
 
         $product = (object) [
             'id' => (int) $productModel->id,
@@ -215,7 +217,8 @@ class StorefrontController extends Controller
             'popis' => $productModel->popis,
             'created_at' => $productModel->created_at,
             'kategoria_nazov' => $productModel->category?->nazov,
-            'variant_id' => $variant?->id,
+            'variant_id' => $variantId,
+            'in_cart' => $variantId !== null && array_key_exists($variantId, $cart),
             'cena' => (float) ($variant?->cena ?? $productModel->zakladna_cena ?? 0),
             'stock_total' => $stockTotal,
             'stock_status' => $stockTotal > 0 ? 'In stock' : 'Out of stock',

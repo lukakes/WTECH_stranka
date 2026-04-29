@@ -41,6 +41,16 @@
           <button class="detail-cart-btn" type="submit">Add to Cart</button>
         </form>
 
+        @if ($product->in_cart && $product->variant_id)
+          <form class="product-detail-actions" method="POST" action="{{ route('cart.remove') }}">
+            @csrf
+            <input type="hidden" name="variant_id" value="{{ $product->variant_id }}">
+            <button class="detail-outline-btn remove-btn" type="submit">
+              Remove from Cart
+            </button>
+          </form>
+        @endif
+
         <div class="product-detail-description">
           <p>{{ $product->description_text }}</p>
         </div>

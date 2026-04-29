@@ -98,6 +98,7 @@
                   type="radio"
                   name="delivery_id"
                   value="{{ $delivery->id }}"
+                  data-price="{{ (float) $delivery->cena }}"
                   {{ (int) old('delivery_id', $selectedDeliveryId) === (int) $delivery->id ? 'checked' : '' }}
                   required
                 />
@@ -124,6 +125,7 @@
                   type="radio"
                   name="payment_id"
                   value="{{ $payment->id }}"
+                  data-price="{{ (float) $payment->poplatok }}"
                   {{ (int) old('payment_id', $selectedPaymentId) === (int) $payment->id ? 'checked' : '' }}
                   required
                 />
@@ -158,7 +160,7 @@
         </form>
       </section>
 
-      <aside class="checkout-summary">
+      <aside class="checkout-summary" data-subtotal="{{ (float) $subtotal }}">
         <h2>Order summary</h2>
 
         @forelse ($cartItems as $item)
@@ -175,21 +177,57 @@
 
         <div class="checkout-summary-item">
           <span>Delivery</span>
-          <span>€{{ number_format((float) $deliveryFee, 2, ',', '') }}</span>
+          <span id="checkout-delivery-fee">€{{ number_format((float) $deliveryFee, 2, ',', '') }}</span>
         </div>
 
-        @if ((float) $paymentFee > 0)
-          <div class="checkout-summary-item">
-            <span>Payment fee</span>
-            <span>€{{ number_format((float) $paymentFee, 2, ',', '') }}</span>
-          </div>
-        @endif
+        <div class="checkout-summary-item" id="checkout-payment-fee-row" style="{{ (float) $paymentFee > 0 ? '' : 'display: none;' }}">
+          <span>Payment fee</span>
+          <span id="checkout-payment-fee">€{{ number_format((float) $paymentFee, 2, ',', '') }}</span>
+        </div>
 
         <div class="checkout-summary-total">
           <span>Total</span>
-          <span>€{{ number_format((float) $total, 2, ',', '') }}</span>
+          <span id="checkout-total">€{{ number_format((float) $total, 2, ',', '') }}</span>
         </div>
       </aside>
     </div>
   </main>
+
+  <script>
+    const checkoutSummary = document.querySelector('.checkout-summary');
+    const deliveryFeeText = document.getElementById('checkout-delivery-fee');
+    const paymentFeeRow = document.getElementById('checkout-payment-fee-row');
+    const paymentFeeText = document.getElementById('checkout-payment-fee');
+    const totalText = document.getElementById('checkout-total');
+
+    function formatEuro(value) {
+      return '€' + Number(value).toFixed(2).replace('.', ',');
+    }
+
+    function selectedPrice(selector) {
+      const selected = document.querySelector(selector + ':checked');
+      return selected ? Number(selected.dataset.price || 0) : 0;
+    }
+
+    function updateCheckoutSummary() {
+      if (!checkoutSummary || !deliveryFeeText || !paymentFeeRow || !paymentFeeText || !totalText) {
+        return;
+      }
+
+      const subtotal = Number(checkoutSummary.dataset.subtotal || 0);
+      const deliveryFee = subtotal > 0 ? selectedPrice('input[name="delivery_id"]') : 0;
+      const paymentFee = subtotal > 0 ? selectedPrice('input[name="payment_id"]') : 0;
+
+      deliveryFeeText.textContent = formatEuro(deliveryFee);
+      paymentFeeText.textContent = formatEuro(paymentFee);
+      paymentFeeRow.style.display = paymentFee > 0 ? '' : 'none';
+      totalText.textContent = formatEuro(subtotal + deliveryFee + paymentFee);
+    }
+
+    document.querySelectorAll('input[name="delivery_id"], input[name="payment_id"]').forEach((input) => {
+      input.addEventListener('change', updateCheckoutSummary);
+    });
+
+    updateCheckoutSummary();
+  </script>
 @endsection
