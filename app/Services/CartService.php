@@ -17,6 +17,13 @@ class CartService
         if (Auth::check()) {
             /** @var User $user */
             $user = Auth::user();
+
+            if ($user->isAdmin()) {
+                $request->session()->forget('cart');
+
+                return [];
+            }
+
             $cart = $this->getUserCart($user);
             $request->session()->put('cart', $cart);
 
@@ -33,6 +40,13 @@ class CartService
         if (Auth::check()) {
             /** @var User $user */
             $user = Auth::user();
+
+            if ($user->isAdmin()) {
+                $request->session()->forget('cart');
+
+                return;
+            }
+
             $this->storeUserCart($user, $normalizedCart);
         }
 
@@ -52,6 +66,12 @@ class CartService
 
     public function mergeSessionIntoUserCart(Request $request, User $user): void
     {
+        if ($user->isAdmin()) {
+            $request->session()->forget('cart');
+
+            return;
+        }
+
         $sessionCart = $this->getSessionCart($request);
         $userCart = $this->getUserCart($user);
 

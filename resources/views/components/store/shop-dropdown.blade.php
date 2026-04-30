@@ -25,7 +25,7 @@
       </div>
       <div class="dropdown-image">
         <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Pytajte sa odpoviem, Fidlibum som vsetko viem">
-        <p><a href="{{ route('home') }}#contact-shop">Pytajte sa</a> vsetko viem, Fidlibum som vsetko viem!</p>
+        <p><a href="{{ route('contact') }}">Pytajte sa</a> vsetko viem, Fidlibum som vsetko viem!</p>
       </div>
     </div>
     <div class="row">

@@ -13,20 +13,24 @@
   <link rel="stylesheet" href="{{ asset('style.css') }}" />
 </head>
 <body class="@yield('bodyClass')">
+  @php
+    $isProductSearchPage = request()->routeIs('products') || request()->routeIs('products.category');
+  @endphp
+
   <header class="top-header">
     <h1 class="logo">Super nazov</h1>
     <div class="header-row">
       <div class="search-box">
         <form method="GET" action="{{ request()->routeIs('products.category') ? route('products.category', ['categorySlug' => request()->route('categorySlug')]) : route('products') }}" class="store-search-form">
           <i class="fa-solid fa-magnifying-glass"></i>
-          @if (request()->routeIs('products') || request()->routeIs('products.category'))
+          @if ($isProductSearchPage)
             @unless (request()->routeIs('products.category'))
               <input type="hidden" name="category" value="{{ request('category', 'all') }}">
             @endunless
             <input type="hidden" name="availability" value="{{ request('availability', 'all') }}">
             <input type="hidden" name="sort" value="{{ request('sort', 'featured') }}">
           @endif
-          <input type="text" name="q" id="store-product-search" placeholder="Search the store" autocomplete="off" value="{{ request('q', '') }}" />
+          <input type="text" name="q" id="store-product-search" placeholder="Search the store" autocomplete="off" value="{{ $isProductSearchPage ? request('q', '') : '' }}" />
         </form>
       </div>
 
@@ -58,7 +62,9 @@
         </div>
 
         @php
-          $cartCount = array_sum(session('cart', []));
+          $cartCount = auth()->check() && auth()->user()->isAdmin()
+            ? 0
+            : array_sum(session('cart', []));
         @endphp
 
         <a href="{{ route('cart.index') }}" class="cart-icon" aria-label="Shopping cart">
@@ -72,8 +78,8 @@
   <nav class="navbar">
     <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
     <x-store.shop-dropdown />
-    <a href="{{ route('home') }}#about-shop">About</a>
-    <a href="{{ route('home') }}#contact-shop">Contact</a>
+    <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">About</a>
+    <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
   </nav>
 
   @yield('content')

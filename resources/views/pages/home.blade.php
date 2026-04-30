@@ -45,7 +45,7 @@
             Samozrejme ze viem aky placeholder text tu mam napisat,
             aby to tematicky sedelo ku zvysku stranky
           </p>
-          <a href="{{ route('home') }}#about-shop" class="btn">See more !</a>
+          <a href="{{ route('about') }}" class="btn">See more !</a>
         </div>
 
         <div class="promo-image">
@@ -66,7 +66,7 @@
             Potom prišli ďakí veľkí chlapi<br>
             Spýtali sa, či ma niečo trápi
           </p>
-          <a href="{{ route('home') }}#contact-shop" class="btn">See more !</a>
+          <a href="{{ route('contact') }}" class="btn">See more !</a>
         </div>
         
         <div class="promo-image">
