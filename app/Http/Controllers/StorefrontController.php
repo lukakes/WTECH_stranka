@@ -219,7 +219,14 @@ class StorefrontController extends Controller
 
         $variant = $productModel->variants->first();
         $stockTotal = (int) $productModel->variants->sum('skladom');
-        $imageUrl = $this->sanitizeImagePath($productModel->images->first()?->url);
+        $galleryImages = $productModel->images
+            ->map(fn ($image) => $this->sanitizeImagePath($image->url))
+            ->filter()
+            ->values();
+        $imageUrl = $galleryImages->first() ?? '';
+        $galleryImages = $galleryImages->isNotEmpty()
+            ? $galleryImages
+            : collect(['images/Products/prod-img-1.png']);
         $descriptionText = trim((string) ($productModel->popis ?? ''));
         $descriptionText = $descriptionText !== ''
             ? $descriptionText
@@ -240,6 +247,7 @@ class StorefrontController extends Controller
             'stock_status' => $stockTotal > 0 ? 'In stock' : 'Out of stock',
             'image_url' => $imageUrl,
             'image_path' => $imageUrl !== '' ? $imageUrl : 'images/Products/prod-img-1.png',
+            'gallery_images' => $galleryImages,
             'description_text' => $descriptionText,
         ];
 

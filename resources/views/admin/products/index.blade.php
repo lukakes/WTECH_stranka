@@ -15,8 +15,15 @@
           <p>Manage product catalog, stock, categories, and images.</p>
         </div>
 
-        <a href="#" class="btn admin-disabled-action" aria-disabled="true">Add product</a>
+        <a href="{{ route('admin.products.create') }}" class="btn">Add product</a>
       </div>
+
+      @if (session('admin_success'))
+        <p class="form-success admin-message">{{ session('admin_success') }}</p>
+      @endif
+      @if (session('admin_error'))
+        <p class="form-error admin-form-alert">{{ session('admin_error') }}</p>
+      @endif
 
       <form method="GET" action="{{ route('admin.products.index') }}" class="admin-toolbar">
         <input type="text" name="q" value="{{ $search }}" placeholder="Search products">
@@ -66,8 +73,12 @@
                 </td>
                 <td>
                   <div class="admin-actions">
-                    <a href="#" aria-disabled="true">Edit</a>
-                    <a href="#" aria-disabled="true">Delete</a>
+                    <a href="{{ route('admin.products.edit', ['product' => $product->id]) }}">Edit</a>
+                    <form method="POST" action="{{ route('admin.products.destroy', ['product' => $product->id]) }}" onsubmit="return confirm('Delete this product permanently?');">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit">Delete</button>
+                    </form>
                   </div>
                 </td>
               </tr>

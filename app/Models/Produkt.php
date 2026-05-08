@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Produkt extends Model
@@ -44,6 +45,18 @@ class Produkt extends Model
     public function variants(): HasMany
     {
         return $this->hasMany(VariantProduktu::class, 'produkt_id');
+    }
+
+    public function orderItems(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            PolozkaObjednavky::class,
+            VariantProduktu::class,
+            'produkt_id',
+            'variant_id',
+            'id',
+            'id'
+        );
     }
 
     public function firstActiveVariant(): HasOne
