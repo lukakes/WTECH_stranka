@@ -215,9 +215,13 @@ class AdminProductTest extends TestCase
         $admin = User::factory()->create(['role' => 'ADMIN']);
         $category = Kategoria::create(['nazov' => 'Pins']);
         $product = $this->createAdminProduct($category);
-        $image = $product->images()->firstOrFail();
+        $image = ProduktovyObrazok::create([
+            'produkt_id' => $product->id,
+            'url' => 'storage/products/delete-extra.jpg',
+            'poradie' => 3,
+        ]);
 
-        Storage::disk('public')->put('products/delete-me.jpg', 'fake image content');
+        Storage::disk('public')->put('products/delete-extra.jpg', 'fake image content');
 
         $response = $this->actingAs($admin)
             ->delete(route('admin.products.images.destroy', [
@@ -232,7 +236,8 @@ class AdminProductTest extends TestCase
         $this->assertDatabaseMissing('produktove_obrazky', [
             'id' => $image->id,
         ]);
-        Storage::disk('public')->assertMissing('products/delete-me.jpg');
+        Storage::disk('public')->assertMissing('products/delete-extra.jpg');
+        $this->assertSame(2, $product->fresh()->images()->count());
     }
 
     public function test_admin_can_delete_product_without_orders(): void

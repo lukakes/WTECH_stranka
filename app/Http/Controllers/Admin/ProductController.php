@@ -196,10 +196,10 @@ class ProductController extends Controller
     {
         abort_if((int) $image->produkt_id !== (int) $product->id, 404);
 
-        if ($product->images()->count() <= 1) {
+        if ($product->images()->count() <= 2) {
             return redirect()
                 ->route('admin.products.edit', ['product' => $product->id])
-                ->with('admin_error', 'Product must keep at least one image.');
+                ->with('admin_error', 'Product must keep at least two images.');
         }
 
         $this->deleteProductImageFile($image);
