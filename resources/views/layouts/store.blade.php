@@ -29,6 +29,8 @@
             @endunless
             <input type="hidden" name="availability" value="{{ request('availability', 'all') }}">
             <input type="hidden" name="sort" value="{{ request('sort', 'featured') }}">
+            <input type="hidden" name="min_price" value="{{ request('min_price', 0) }}">
+            <input type="hidden" name="max_price" value="{{ request('max_price', 50) }}">
           @endif
           <input type="text" name="q" id="store-product-search" placeholder="Search the store" autocomplete="off" value="{{ $isProductSearchPage ? request('q', '') : '' }}" />
         </form>

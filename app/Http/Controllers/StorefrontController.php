@@ -75,6 +75,8 @@ class StorefrontController extends Controller
         $availability = strtolower((string) $request->query('availability', 'all'));
         $sort = strtolower((string) $request->query('sort', 'featured'));
         $search = trim((string) $request->query('q', ''));
+        $minPrice = $this->normalizePriceFilter($request->query('min_price'), 0);
+        $maxPrice = $this->normalizePriceFilter($request->query('max_price'), 50);
 
         $allowedAvailability = ['all', 'in-stock', 'out-of-stock'];
         $allowedSort = ['featured', 'name-asc', 'name-desc', 'price-asc', 'price-desc', 'newest'];
@@ -91,6 +93,10 @@ class StorefrontController extends Controller
 
         if (!in_array($sort, $allowedSort, true)) {
             $sort = 'featured';
+        }
+
+        if ($minPrice > $maxPrice) {
+            [$minPrice, $maxPrice] = [$maxPrice, $minPrice];
         }
 
         $query = Produkt::query()
@@ -138,6 +144,14 @@ class StorefrontController extends Controller
             });
         }
 
+        if ($minPrice > 0 || $maxPrice < 50) {
+            $query->whereHas('variants', function (Builder $variantQuery) use ($minPrice, $maxPrice) {
+                $variantQuery
+                    ->active()
+                    ->whereBetween('cena', [$minPrice, $maxPrice]);
+            });
+        }
+
         if ($sort === 'name-asc') {
             $query->orderBy('nazov')->orderBy('id');
         } elseif ($sort === 'name-desc') {
@@ -180,6 +194,8 @@ class StorefrontController extends Controller
                 'category' => $category,
                 'availability' => $availability,
                 'sort' => $sort,
+                'min_price' => $minPrice,
+                'max_price' => $maxPrice,
             ],
         ]);
     }
@@ -629,5 +645,14 @@ class StorefrontController extends Controller
         $sanitizedPath = ltrim((string) $imagePath, '/');
 
         return (string) preg_replace('/^\.\.\//', '', $sanitizedPath);
+    }
+
+    private function normalizePriceFilter(mixed $value, int $fallback): int
+    {
+        if (!is_numeric($value)) {
+            return $fallback;
+        }
+
+        return max(0, min(50, (int) $value));
     }
 }

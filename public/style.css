@@ -799,6 +799,59 @@ input[type="number"] {
   border-color: #2f6f70;
 }
 
+.price-filter-group input[type="range"] {
+  width: 180px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bgtint);
+  accent-color: var(--dgreen);
+  cursor: pointer;
+  appearance: none;
+}
+
+.price-filter-group input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bgtint);
+}
+
+.price-filter-group input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--dgreen);
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(13, 63, 66, 0.25);
+}
+
+.price-filter-group input[type="range"]::-moz-range-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bgtint);
+}
+
+.price-filter-group input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--dgreen);
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(13, 63, 66, 0.25);
+}
+
+.price-filter-group span {
+  min-width: 44px;
+  font-size: 0.9rem;
+  color: var(--dgreen);
+  font-weight: 600;
+  background: var(--bgtint);
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  text-align: center;
+}
+
 .filter-count {
   margin-left: auto;
   font-size: 0.85rem;
