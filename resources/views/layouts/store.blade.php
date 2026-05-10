@@ -18,7 +18,7 @@
   @endphp
 
   <header class="top-header">
-    <h1 class="logo">Super nazov</h1>
+    <a href="{{ route('home') }}" class="logo" aria-label="Sticker Shop home">Super nazov</a>
     <div class="header-row">
       <div class="search-box">
         <form method="GET" action="{{ request()->routeIs('products.category') ? route('products.category', ['categorySlug' => request()->route('categorySlug')]) : route('products') }}" class="store-search-form">

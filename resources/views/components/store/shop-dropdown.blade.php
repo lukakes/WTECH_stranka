@@ -24,7 +24,7 @@
         <a href="{{ route('products', ['sort' => 'newest']) }}">Newest</a>
       </div>
       <div class="dropdown-image">
-        <img src="https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s1600x1600.jpg" alt="Pytajte sa odpoviem, Fidlibum som vsetko viem">
+        <img src="{{ asset('https://mkskimgmodrykonik.vshcdn.net/0Xv0iZlre0O_s600x600.jpg') }}" alt="Fidlibum"> <!-- source: Google images: https://www.google.com/imghp?hl=sk&authuser=0&ogbl -->
         <p><a href="{{ route('contact') }}">Pytajte sa</a> vsetko viem, Fidlibum som vsetko viem!</p>
       </div>
     </div>

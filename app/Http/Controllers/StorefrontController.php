@@ -28,6 +28,9 @@ class StorefrontController extends Controller
 
         $featuredProducts = Produkt::query()
             ->active()
+            ->whereHas('variants', function ($query) {
+                $query->active()->where('skladom', '>', 0);
+            })
             ->with([
                 'variants' => function ($query) {
                     $query->active()->orderBy('id');
