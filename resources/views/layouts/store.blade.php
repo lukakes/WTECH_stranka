@@ -13,20 +13,26 @@
   <link rel="stylesheet" href="{{ asset('style.css') }}" />
 </head>
 <body class="@yield('bodyClass')">
+  @php
+    $isProductSearchPage = request()->routeIs('products') || request()->routeIs('products.category');
+  @endphp
+
   <header class="top-header">
-    <h1 class="logo">Super nazov</h1>
+    <a href="{{ route('home') }}" class="logo" aria-label="Sticker Shop home">Super nazov</a>
     <div class="header-row">
       <div class="search-box">
         <form method="GET" action="{{ request()->routeIs('products.category') ? route('products.category', ['categorySlug' => request()->route('categorySlug')]) : route('products') }}" class="store-search-form">
           <i class="fa-solid fa-magnifying-glass"></i>
-          @if (request()->routeIs('products') || request()->routeIs('products.category'))
+          @if ($isProductSearchPage)
             @unless (request()->routeIs('products.category'))
               <input type="hidden" name="category" value="{{ request('category', 'all') }}">
             @endunless
             <input type="hidden" name="availability" value="{{ request('availability', 'all') }}">
             <input type="hidden" name="sort" value="{{ request('sort', 'featured') }}">
+            <input type="hidden" name="min_price" value="{{ request('min_price', 0) }}">
+            <input type="hidden" name="max_price" value="{{ request('max_price', 50) }}">
           @endif
-          <input type="text" name="q" id="store-product-search" placeholder="Search the store" autocomplete="off" value="{{ request('q', '') }}" />
+          <input type="text" name="q" id="store-product-search" placeholder="Search the store" autocomplete="off" value="{{ $isProductSearchPage ? request('q', '') : '' }}" />
         </form>
       </div>
 
@@ -39,7 +45,10 @@
             <div class="profile-dropdown-content">
               @auth
                 <a href="{{ route('profile.edit') }}">Profile</a>
-                <a href="{{ route('dashboard') }}">Dashboard</a>
+                <a href="{{ route('dashboard') }}">Settings</a>
+                @if (auth()->user()->isAdmin())
+                  <a href="{{ route('admin.products.index') }}">Admin products</a>
+                @endif
                 <form method="POST" action="{{ route('logout') }}">
                   @csrf
                   <button type="submit">Logout</button>
@@ -55,7 +64,9 @@
         </div>
 
         @php
-          $cartCount = array_sum(session('cart', []));
+          $cartCount = auth()->check() && auth()->user()->isAdmin()
+            ? 0
+            : array_sum(session('cart', []));
         @endphp
 
         <a href="{{ route('cart.index') }}" class="cart-icon" aria-label="Shopping cart">
@@ -69,20 +80,22 @@
   <nav class="navbar">
     <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
     <x-store.shop-dropdown />
-    <a href="{{ route('home') }}#about-shop">About</a>
-    <a href="{{ route('home') }}#contact-shop">Contact</a>
+    <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">About</a>
+    <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
   </nav>
 
-  @yield('content')
+  <main class="store-page-content">
+    @yield('content')
+  </main>
 
   <footer id="contact-shop">
     <div class="footer-content">
       <div class="footer-links">
-        <h2>Footer</h2>
-        <p><a href="{{ route('home') }}">Home</a></p>
-        <p><a href="{{ route('login') }}">Login</a></p>
+        <h2>Super nazov</h2>
+        <a href="{{ route('home') }}">Home</a>
+        <a href="{{ route('login') }}">Login</a>
         @if (Route::has('register'))
-          <p><a href="{{ route('register') }}">Register</a></p>
+          <a href="{{ route('register') }}">Register</a>
         @endif
       </div>
 

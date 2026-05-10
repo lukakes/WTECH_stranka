@@ -8,27 +8,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Kategoria extends Model
 {
-    protected $table = 'Kategoria';
+    protected $table = 'kategorie';
 
     public $timestamps = false;
 
     protected $fillable = [
         'nazov',
-        'parentId',
+        'parent_id',
     ];
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(self::class, 'parentId');
+        return $this->belongsTo(self::class, 'parent_id');
     }
 
     public function children(): HasMany
     {
-        return $this->hasMany(self::class, 'parentId');
+        return $this->hasMany(self::class, 'parent_id');
     }
 
     public function produkty(): HasMany
     {
-        return $this->hasMany(Produkt::class, 'kategoriaId');
+        return $this->hasMany(Produkt::class, 'kategoria_id');
     }
 }

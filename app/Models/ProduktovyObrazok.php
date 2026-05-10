@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProduktovyObrazok extends Model
 {
-    protected $table = 'ProduktovyObrazok';
+    protected $table = 'produktove_obrazky';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'produktId',
+        'produkt_id',
         'url',
         'poradie',
     ];
@@ -23,6 +23,6 @@ class ProduktovyObrazok extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Produkt::class, 'produktId');
+        return $this->belongsTo(Produkt::class, 'produkt_id');
     }
 }

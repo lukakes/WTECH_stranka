@@ -38,6 +38,21 @@
     </select>
   </div>
 
+  <div class="filter-group price-filter-group">
+    <input type="hidden" name="min_price" value="0">
+    <label for="filter-max-price">Price up to</label>
+    <input
+      id="filter-max-price"
+      name="max_price"
+      type="range"
+      min="0"
+      max="50"
+      step="1"
+      value="{{ $filters['max_price'] }}"
+    >
+    <span id="filter-max-price-label">€{{ $filters['max_price'] }}</span>
+  </div>
+
   <div class="filter-group">
     <label for="filter-sort">Sort by</label>
     <select id="filter-sort" name="sort">
@@ -60,3 +75,14 @@
     <p class="filter-count">Category is locked for this page.</p>
   @endif
 </form>
+
+<script>
+  const priceSlider = document.getElementById('filter-max-price');
+  const priceLabel = document.getElementById('filter-max-price-label');
+
+  if (priceSlider && priceLabel) {
+    priceSlider.addEventListener('input', () => {
+      priceLabel.textContent = '€' + priceSlider.value;
+    });
+  }
+</script>

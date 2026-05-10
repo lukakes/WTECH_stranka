@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Produkt extends Model
 {
-    protected $table = 'Produkt';
+    protected $table = 'produkty';
 
     public $timestamps = false;
 
@@ -18,7 +19,7 @@ class Produkt extends Model
         'nazov',
         'popis',
         'zakladna_cena',
-        'kategoriaId',
+        'kategoria_id',
         'aktivny',
         'created_at',
     ];
@@ -38,23 +39,35 @@ class Produkt extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Kategoria::class, 'kategoriaId');
+        return $this->belongsTo(Kategoria::class, 'kategoria_id');
     }
 
     public function variants(): HasMany
     {
-        return $this->hasMany(VariantProduktu::class, 'produktId');
+        return $this->hasMany(VariantProduktu::class, 'produkt_id');
+    }
+
+    public function orderItems(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            PolozkaObjednavky::class,
+            VariantProduktu::class,
+            'produkt_id',
+            'variant_id',
+            'id',
+            'id'
+        );
     }
 
     public function firstActiveVariant(): HasOne
     {
-        return $this->hasOne(VariantProduktu::class, 'produktId')
+        return $this->hasOne(VariantProduktu::class, 'produkt_id')
             ->active()
             ->orderBy('id');
     }
 
     public function images(): HasMany
     {
-        return $this->hasMany(ProduktovyObrazok::class, 'produktId');
+        return $this->hasMany(ProduktovyObrazok::class, 'produkt_id');
     }
 }

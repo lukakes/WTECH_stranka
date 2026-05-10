@@ -3,7 +3,7 @@
 @section('title', 'Shopping Cart - Sticker Shop')
 
 @section('content')
-  <main class="shopping-cart container">
+  <div class="shopping-cart container">
     <div class="breadcrumb">
       <a href="{{ route('home') }}">Home</a> &gt; Shopping Cart
     </div>
@@ -100,7 +100,7 @@
         <li class="cart-items">
           <div class="cart-subtotal">
             <div class="subtotal-info">
-              Taxes and <a href="#" class="cart-shipping-info">shipping</a> calculated at checkout
+              Taxes and <span class="cart-shipping-info">shipping</span> calculated at checkout
             </div>
             <div class="subtotal-value">
               <div class="subtotal-value-text">Subtotal:</div>
@@ -111,11 +111,11 @@
       </ul>
 
       <div class="cart-payment">
-        <a href="#" class="btn">Check out</a>
+        <a href="{{ route('checkout') }}" class="btn">Check out</a>
         <a href="{{ route('products') }}" class="cart-link-back-to-shop">Continue shopping</a>
       </div>
     </div>
-  </main>
+  </div>
 
   <script>
     document.querySelectorAll('.quantity-change').forEach((form) => {

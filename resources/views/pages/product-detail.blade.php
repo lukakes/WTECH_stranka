@@ -14,8 +14,40 @@
 
     <section class="product-detail-layout">
       <div class="product-detail-image-wrap">
-        <div class="product-detail-image">
-          <img src="{{ asset($product->image_path) }}" alt="{{ $product->nazov }}">
+        <div class="product-gallery" data-current-index="0">
+          <div class="product-detail-image">
+            <img
+              src="{{ asset($product->gallery_images->first()) }}"
+              alt="{{ $product->nazov }}"
+              id="product-gallery-main"
+            >
+
+            @if ($product->gallery_images->count() > 1)
+              <button class="product-gallery-arrow product-gallery-prev" type="button" aria-label="Previous image">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button class="product-gallery-arrow product-gallery-next" type="button" aria-label="Next image">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            @endif
+          </div>
+
+          @if ($product->gallery_images->count() > 1)
+            <div class="product-gallery-thumbs" aria-label="Product image thumbnails">
+              @foreach ($product->gallery_images as $index => $imagePath)
+                <button
+                  class="product-gallery-thumb {{ $index === 0 ? 'active' : '' }}"
+                  type="button"
+                  data-index="{{ $index }}"
+                  data-image="{{ asset($imagePath) }}"
+                  aria-label="Show product image {{ $index + 1 }}"
+                  {{ $index === 0 ? 'aria-current=true' : '' }}
+                >
+                  <img src="{{ asset($imagePath) }}" alt="">
+                </button>
+              @endforeach
+            </div>
+          @endif
         </div>
       </div>
 
@@ -40,6 +72,16 @@
           <button class="detail-outline-btn" type="button">Add to wishlist</button>
           <button class="detail-cart-btn" type="submit">Add to Cart</button>
         </form>
+
+        @if ($product->in_cart && $product->variant_id)
+          <form class="product-detail-actions" method="POST" action="{{ route('cart.remove') }}">
+            @csrf
+            <input type="hidden" name="variant_id" value="{{ $product->variant_id }}">
+            <button class="detail-outline-btn remove-btn" type="submit">
+              Remove from Cart
+            </button>
+          </form>
+        @endif
 
         <div class="product-detail-description">
           <p>{{ $product->description_text }}</p>
@@ -136,6 +178,48 @@
         if (value < max) {
           input.value = String(value + 1);
         }
+      });
+    }
+
+    const gallery = document.querySelector('.product-gallery');
+    const mainImage = document.getElementById('product-gallery-main');
+    const thumbs = Array.from(document.querySelectorAll('.product-gallery-thumb'));
+    const prevGalleryBtn = document.querySelector('.product-gallery-prev');
+    const nextGalleryBtn = document.querySelector('.product-gallery-next');
+
+    function setGalleryImage(index) {
+      if (!gallery || !mainImage || thumbs.length === 0) {
+        return;
+      }
+
+      const safeIndex = (index + thumbs.length) % thumbs.length;
+      const selectedThumb = thumbs[safeIndex];
+      mainImage.src = selectedThumb.dataset.image;
+      gallery.dataset.currentIndex = String(safeIndex);
+
+      thumbs.forEach((thumb, thumbIndex) => {
+        thumb.classList.toggle('active', thumbIndex === safeIndex);
+        if (thumbIndex === safeIndex) {
+          thumb.setAttribute('aria-current', 'true');
+        } else {
+          thumb.removeAttribute('aria-current');
+        }
+      });
+    }
+
+    thumbs.forEach((thumb) => {
+      thumb.addEventListener('click', () => {
+        setGalleryImage(parseInt(thumb.dataset.index, 10) || 0);
+      });
+    });
+
+    if (prevGalleryBtn && nextGalleryBtn) {
+      prevGalleryBtn.addEventListener('click', () => {
+        setGalleryImage((parseInt(gallery.dataset.currentIndex, 10) || 0) - 1);
+      });
+
+      nextGalleryBtn.addEventListener('click', () => {
+        setGalleryImage((parseInt(gallery.dataset.currentIndex, 10) || 0) + 1);
       });
     }
   </script>

@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VariantProduktu extends Model
 {
-    protected $table = 'VariantProduktu';
+    protected $table = 'varianty_produktu';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'produktId',
+        'produkt_id',
         'nazov',
         'cena',
         'skladom',
@@ -35,6 +35,6 @@ class VariantProduktu extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Produkt::class, 'produktId');
+        return $this->belongsTo(Produkt::class, 'produkt_id');
     }
 }
