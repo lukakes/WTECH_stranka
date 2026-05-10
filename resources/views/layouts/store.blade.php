@@ -45,7 +45,7 @@
             <div class="profile-dropdown-content">
               @auth
                 <a href="{{ route('profile.edit') }}">Profile</a>
-                <a href="{{ route('dashboard') }}">Dashboard</a>
+                <a href="{{ route('dashboard') }}">Settings</a>
                 @if (auth()->user()->isAdmin())
                   <a href="{{ route('admin.products.index') }}">Admin products</a>
                 @endif
@@ -84,16 +84,18 @@
     <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
   </nav>
 
-  @yield('content')
+  <main class="store-page-content">
+    @yield('content')
+  </main>
 
   <footer id="contact-shop">
     <div class="footer-content">
       <div class="footer-links">
-        <h2>Footer</h2>
-        <p><a href="{{ route('home') }}">Home</a></p>
-        <p><a href="{{ route('login') }}">Login</a></p>
+        <h2>Super nazov</h2>
+        <a href="{{ route('home') }}">Home</a>
+        <a href="{{ route('login') }}">Login</a>
         @if (Route::has('register'))
-          <p><a href="{{ route('register') }}">Register</a></p>
+          <a href="{{ route('register') }}">Register</a>
         @endif
       </div>
 
