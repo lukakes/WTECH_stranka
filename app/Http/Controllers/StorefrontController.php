@@ -11,6 +11,7 @@ use App\Models\Produkt;
 use App\Models\VariantProduktu;
 use App\Models\Zakaznik;
 use App\Services\CartService;
+use App\Services\OrderClaimService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -286,10 +287,13 @@ class StorefrontController extends Controller
         ]);
     }
 
-    public function checkoutStore(Request $request, CartService $cartService)
+    public function checkoutStore(Request $request, CartService $cartService, OrderClaimService $orderClaimService)
     {
         $deliveryOptions = $this->activeDeliveryOptions();
         $paymentOptions = $this->activePaymentOptions();
+        $accountUserId = $request->user() && !$request->user()->isAdmin()
+            ? (int) $request->user()->id
+            : null;
 
         $validated = $request->validate([
             'first_name' => ['required', 'string', 'max:100'],
@@ -314,7 +318,7 @@ class StorefrontController extends Controller
         $payment = $paymentOptions->firstWhere('id', (int) $validated['payment_id']);
 
         try {
-            $order = DB::transaction(function () use ($cart, $cartService, $delivery, $payment, $request, $validated) {
+            $order = DB::transaction(function () use ($accountUserId, $cart, $cartService, $delivery, $payment, $request, $validated) {
                 $variants = VariantProduktu::query()
                     ->active()
                     ->with([
@@ -371,6 +375,7 @@ class StorefrontController extends Controller
                 ]);
 
                 $order = Objednavka::create([
+                    'user_id' => $accountUserId,
                     'zakaznik_id' => $customer->id,
                     'adresa_id' => $address->id,
                     'doprava_id' => $delivery->id,
@@ -405,12 +410,16 @@ class StorefrontController extends Controller
                 ->with('cart_error', $exception->getMessage());
         }
 
+        if ($accountUserId === null) {
+            $orderClaimService->rememberOrder($request, $order);
+        }
+
         return redirect()
             ->route('checkout.success', ['order' => $order->id])
             ->with('checkout_success', 'Order was created successfully.');
     }
 
-    public function checkoutSuccess(int $order)
+    public function checkoutSuccess(Request $request, OrderClaimService $orderClaimService, int $order)
     {
         $orderModel = Objednavka::query()
             ->with(['zakaznik', 'polozky.variant.product'])
@@ -418,6 +427,8 @@ class StorefrontController extends Controller
 
         return view('pages.checkout-success', [
             'order' => $orderModel,
+            'isClaimableOrder' => $orderModel->user_id === null
+                && $orderClaimService->isClaimableInSession($request, (int) $orderModel->id),
         ]);
     }
 

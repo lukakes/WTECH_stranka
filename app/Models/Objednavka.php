@@ -13,6 +13,7 @@ class Objednavka extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'user_id',
         'zakaznik_id',
         'adresa_id',
         'doprava_id',
@@ -36,6 +37,11 @@ class Objednavka extends Model
     public function zakaznik(): BelongsTo
     {
         return $this->belongsTo(Zakaznik::class, 'zakaznik_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function polozky(): HasMany

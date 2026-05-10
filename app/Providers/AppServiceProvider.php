@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\CartService;
+use App\Services\OrderClaimService;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
 
             if ($request) {
                 app(CartService::class)->mergeSessionIntoUserCart($request, $event->user);
+                app(OrderClaimService::class)->claimSessionOrders($request, $event->user);
             }
         });
     }

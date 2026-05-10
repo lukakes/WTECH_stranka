@@ -27,7 +27,14 @@ Route::get('/checkout/success/{order}', [StorefrontController::class, 'checkoutS
     ->name('checkout.success');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $orders = auth()->user()?->orders()
+        ->with(['polozky.variant.product'])
+        ->orderByDesc('created_at')
+        ->orderByDesc('id')
+        ->limit(5)
+        ->get() ?? collect();
+
+    return view('dashboard', compact('orders'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified', 'admin'])

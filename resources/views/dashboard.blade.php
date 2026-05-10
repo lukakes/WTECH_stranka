@@ -23,5 +23,23 @@
             @endauth
         </div>
     </section>
+
+    @if ($orders->isNotEmpty())
+        <section class="profile-card">
+            <div class="profile-card-header">
+                <h2>Your orders</h2>
+                <p>Recent orders linked to this account.</p>
+            </div>
+
+            <div class="checkout-summary">
+                @foreach ($orders as $order)
+                    <div class="checkout-summary-item">
+                        <span>Order #{{ $order->id }} - {{ $order->stav }}</span>
+                        <span>&euro;{{ number_format((float) $order->total, 2, ',', '') }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+    @endif
 </main>
 @endsection
